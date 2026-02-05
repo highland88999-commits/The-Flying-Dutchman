@@ -30,17 +30,31 @@
         /* --- STAGE 2: LANDING --- */
         #landing-stage {
             position: fixed; inset: 0; z-index: 9000; background: #000;
-            display: none; justify-content: center; align-items: center; cursor: pointer;
+            display: none; flex-direction: column; justify-content: flex-end; align-items: center; cursor: pointer;
+            padding-bottom: 8vh;
         }
         .full-vid { 
             position: absolute; width: 100vw; height: 56.25vw; min-height: 100vh; min-width: 177.77vh; 
             top: 50%; left: 50%; transform: translate(-50%, -50%); pointer-events: none; 
         }
         .abyss-btn {
-            position: relative; z-index: 9001; padding: 25px 60px; border-radius: 100px;
-            border: 2px solid var(--nexus-blue); background: rgba(0,0,0,0.7);
-            backdrop-filter: blur(10px); color: var(--nexus-blue); letter-spacing: 8px;
+            position: relative; z-index: 9001; 
+            padding: 18px 50px; 
+            border-radius: 60px;
+            border: 2px solid var(--nexus-blue);
+            background: rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(12px);
+            color: var(--nexus-blue);
+            letter-spacing: 8px;
+            font-size: 1rem;
             text-shadow: 0 0 15px var(--nexus-blue);
+            cursor: pointer;
+            opacity: 0.85;
+            transition: all 0.3s ease;
+        }
+        .abyss-btn:hover {
+            opacity: 1;
+            transform: scale(1.05);
         }
 
         /* --- STAGE 3: MAIN TERMINAL --- */
@@ -81,14 +95,12 @@
             letter-spacing: 4px; font-size: 1.5rem; text-align: center; margin-bottom: 10px;
         }
 
-        /* Standard Auto-Scroll */
         .text-move {
             font-family: 'Courier New', monospace; font-size: 1.1rem; font-weight: bold;
             color: var(--nexus-blue); text-shadow: 0 0 10px rgba(0, 212, 255, 0.5);
             animation: scrollUp 35s linear infinite;
         }
 
-        /* Manual Scroll Centered for Product */
         .product-scroll {
             overflow-y: auto; text-align: center; color: var(--nexus-blue);
             font-family: 'Courier New', monospace; font-size: 1rem;
@@ -193,7 +205,6 @@
         document.getElementById('entry-gate').style.display = 'none';
         document.getElementById('landing-stage').style.display = 'flex';
         
-        // EMINEM PLAYLIST starts with sound when landing appears
         document.getElementById('landing-audio-engine').innerHTML = `
             <iframe width="0" height="0" src="https://www.youtube.com/embed/videoseries?list=PLTjpY3xiJBoE-vnznhzvi4me3HWmU6WLE&autoplay=1" frameborder="0" allow="autoplay"></iframe>
         `;
@@ -204,7 +215,6 @@
         document.getElementById('main-terminal').style.display = 'block';
         document.getElementById('landing-audio-engine').innerHTML = "";
         
-        // WEDNESDAY/PLAYLIST START
         document.getElementById('terminal-audio-engine').innerHTML = `
             <iframe width="0" height="0" src="https://www.youtube.com/embed/PKsvThMFZII?list=RDPKsvThMFZII&playnext=1&autoplay=1" frameborder="0" allow="autoplay"></iframe>
         `;
