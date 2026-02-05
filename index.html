@@ -128,8 +128,8 @@
 <div id="landing-stage" onclick="enterTerminal()">
     <div id="landing-audio-engine"></div>
     <iframe id="battle-player" class="full-vid" 
-            src="https://www.youtube.com/embed/H7FoA6mrOtU?enablejsapi=1&mute=1&controls=0&loop=1&playlist=H7FoA6mrOtU" 
-            frameborder="0"></iframe>
+            src="https://www.youtube.com/embed/H7FoA6mrOtU?enablejsapi=1&autoplay=1&mute=0&controls=0&loop=1&playlist=H7FoA6mrOtU&rel=0" 
+            frameborder="0" allow="autoplay"></iframe>
     <div class="abyss-btn">ENTER THE ABYSS</div>
 </div>
 
@@ -192,16 +192,23 @@
     function initLanding() {
         document.getElementById('entry-gate').style.display = 'none';
         document.getElementById('landing-stage').style.display = 'flex';
-        // EMINEM START
-        document.getElementById('landing-audio-engine').innerHTML = `<iframe width="0" height="0" src="https://www.youtube.com/embed/videoseries?list=PLNQ3MUvaWFCDMsH6ZRGIBuBmcVzE0v7SH&autoplay=1" frameborder="0" allow="autoplay"></iframe>`;
+        
+        // EMINEM PLAYLIST starts with sound when landing appears
+        document.getElementById('landing-audio-engine').innerHTML = `
+            <iframe width="0" height="0" src="https://www.youtube.com/embed/videoseries?list=PLTjpY3xiJBoE-vnznhzvi4me3HWmU6WLE&autoplay=1" frameborder="0" allow="autoplay"></iframe>
+        `;
     }
 
     function enterTerminal() {
         document.getElementById('landing-stage').style.display = 'none';
         document.getElementById('main-terminal').style.display = 'block';
         document.getElementById('landing-audio-engine').innerHTML = "";
+        
         // WEDNESDAY/PLAYLIST START
-        document.getElementById('terminal-audio-engine').innerHTML = `<iframe width="0" height="0" src="https://www.youtube.com/embed/PKsvThMFZII?list=RDPKsvThMFZII&playnext=1&autoplay=1" frameborder="0" allow="autoplay"></iframe>`;
+        document.getElementById('terminal-audio-engine').innerHTML = `
+            <iframe width="0" height="0" src="https://www.youtube.com/embed/PKsvThMFZII?list=RDPKsvThMFZII&playnext=1&autoplay=1" frameborder="0" allow="autoplay"></iframe>
+        `;
+        
         toggleWin('driver');
     }
 
