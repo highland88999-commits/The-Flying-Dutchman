@@ -27,7 +27,7 @@
             text-shadow: 0 0 10px var(--nexus-blue); animation: breathe 3s infinite;
         }
 
-        /* --- STAGE 2: CINEMATIC LANDING (FULL SOUND) --- */
+        /* --- STAGE 2: LANDING (FORCED AUTOPLAY LOGIC) --- */
         #landing-stage {
             position: fixed; inset: 0; z-index: 9000; background: #000;
             display: none; justify-content: center; align-items: center; cursor: pointer;
@@ -45,14 +45,22 @@
         #main-terminal { position: fixed; inset: 0; z-index: 100; display: none; }
         #bg-shield { position: absolute; inset: 0; z-index: 5; }
 
-        /* --- THE ORACLE (MP4) --- */
+        /* --- THE ORACLE (SHRUNK & SEMI-TRANSPARENT) --- */
         #win-oracle {
-            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
-            width: 350px; height: 350px; border-radius: 50%;
-            border: 3px solid var(--nexus-blue); box-shadow: var(--bloom);
-            overflow: hidden; z-index: 10; background: #000;
+            position: absolute; top: 40%; left: 50%; transform: translate(-50%, -50%);
+            width: 280px; height: 280px; border-radius: 50%;
+            border: 2px solid rgba(0, 212, 255, 0.5); 
+            box-shadow: 0 0 20px rgba(0, 212, 255, 0.2);
+            overflow: hidden; z-index: 10; 
+            background: transparent; /* Allows bg video through */
+            opacity: 0.65; /* Semi-transparent */
+            pointer-events: none;
         }
-        .oracle-mp4 { width: 100%; height: 100%; object-fit: cover; }
+        .oracle-mp4 { 
+            width: 100%; height: 100%; 
+            object-fit: cover;
+            transform: scale(1.1); /* Adjusted to fit the ring precisely */
+        }
 
         /* --- HOLOFRAMES --- */
         .holo-window {
@@ -72,11 +80,6 @@
             display: flex; flex-direction: column; justify-content: space-between;
             background: linear-gradient(to bottom, rgba(0,0,0,0.7), transparent, rgba(0,0,0,0.9));
         }
-        .text-move {
-            font-family: 'Courier New', monospace; font-size: 1.15rem; font-weight: bold;
-            color: var(--nexus-blue); text-shadow: 2px 2px 5px #000;
-            animation: scrollUp 28s linear infinite;
-        }
 
         /* --- DOCK --- */
         #hud-dock {
@@ -91,13 +94,6 @@
         }
         .icon.active { border-color: var(--emerald); box-shadow: 0 0 25px var(--emerald); background: rgba(0, 255, 136, 0.2); }
 
-        .transmit-btn {
-            padding: 18px; background: var(--neon-purple); color: white;
-            text-decoration: none; border-radius: 60px; text-align: center;
-            font-size: 0.9rem; letter-spacing: 3px; font-weight: bold;
-            box-shadow: 0 0 25px var(--neon-purple);
-        }
-
         @keyframes breathe { 0%, 100% { opacity: 0.4; } 50% { opacity: 1; } }
         @keyframes scrollUp { from { transform: translateY(110%); } to { transform: translateY(-130%); } }
         @keyframes zoomIn { from { opacity: 0; transform: translate(-50%, -45%) scale(0.9); } to { opacity: 1; transform: translate(-50%, -50%) scale(1); } }
@@ -110,13 +106,16 @@
 </div>
 
 <div id="landing-stage" onclick="enterTerminal()">
-    <iframe id="battle-player" class="full-vid" src="https://www.youtube.com/embed/H7FoA6mrOtU?autoplay=0&mute=0&controls=0&loop=1&playlist=H7FoA6mrOtU" frameborder="0" allow="autoplay"></iframe>
+    <iframe id="battle-player" class="full-vid" 
+            src="https://www.youtube.com/embed/H7FoA6mrOtU?enablejsapi=1&mute=0&controls=0&loop=1&playlist=H7FoA6mrOtU" 
+            frameborder="0" allow="autoplay; encrypted-media"></iframe>
     <div class="abyss-btn">ENTER THE ABYSS</div>
 </div>
 
 <div id="main-terminal">
     <div id="bg-shield" onclick="closeAllWindows()"></div>
     <div id="audio-engine"></div>
+    
     <iframe class="full-vid" src="https://www.youtube.com/embed/PEaZ5XUe0Mk?autoplay=1&mute=1&controls=0&loop=1&playlist=PEaZ5XUe0Mk" frameborder="0" style="opacity:0.35"></iframe>
 
     <div id="win-oracle">
@@ -134,14 +133,11 @@
         <div class="text-overlay">
             <h2 style="color:var(--emerald); letter-spacing:4px;">DRIVER PORTAL</h2>
             <div style="flex-grow:1; overflow:hidden; position:relative; mask-image: linear-gradient(transparent, black 15%, black 85%, transparent);">
-                <div class="text-move">
-                    Stop letting your daily commute go to waste. <br><br>
-                    Turn your vehicle into a source of income by hosting ads for brands. <br><br>
-                    Earn $200 per month for every decal you display. <br><br>
-                    We handle logistics. Payouts are guaranteed monthly.
+                <div class="text-move" style="animation: scrollUp 28s linear infinite;">
+                    Stop letting your daily commute go to waste. <br><br> Earn $200/month per decal.
                 </div>
             </div>
-            <a href="mailto:dutchmanautoads@gmail.com?subject=Driver Application" class="transmit-btn">TRANSMIT SIGNAL</a>
+            <a href="mailto:dutchmanautoads@gmail.com" class="transmit-btn" style="padding:15px; background:var(--neon-purple); border-radius:50px; text-align:center; text-decoration:none;">TRANSMIT</a>
         </div>
     </div>
 
@@ -154,13 +150,11 @@
         <div class="text-overlay">
             <h2 style="color:var(--emerald); letter-spacing:4px;">BRAND EXPANSION</h2>
             <div style="flex-grow:1; overflow:hidden; position:relative; mask-image: linear-gradient(transparent, black 15%, black 85%, transparent);">
-                <div class="text-move">
-                    Turn local commutes into customer leads. <br><br>
-                    Transform everyday vehicles into powerful mobile advertisements. <br><br>
-                    Verified drivers. Targeted markets. Simple $300/mo flat-rate pricing.
+                <div class="text-move" style="animation: scrollUp 28s linear infinite;">
+                    Transform vehicles into mobile ads. Simple $300/mo flat-rate.
                 </div>
             </div>
-            <a href="mailto:dutchmanautoads@gmail.com?subject=Brand Inquiry" class="transmit-btn">TRANSMIT SIGNAL</a>
+            <a href="mailto:dutchmanautoads@gmail.com" class="transmit-btn" style="padding:15px; background:var(--neon-purple); border-radius:50px; text-align:center; text-decoration:none;">TRANSMIT</a>
         </div>
     </div>
 
@@ -172,12 +166,29 @@
 </div>
 
 <script>
+    // TO FIX AUTOPLAY: We use the YouTube IFrame API "playVideo" call
+    var tag = document.createElement('script');
+    tag.src = "https://www.youtube.com/iframe_api";
+    var firstScriptTag = document.getElementsByTagName('script')[0];
+    firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+
+    var player;
+    function onYouTubeIframeAPIReady() {
+        player = new YT.Player('battle-player', {
+            events: { 'onReady': onPlayerReady }
+        });
+    }
+    function onPlayerReady(event) {
+        // Player is ready, but we wait for the click to play unmuted
+    }
+
     function initLanding() {
         document.getElementById('entry-gate').style.display = 'none';
-        const stage = document.getElementById('landing-stage');
-        stage.style.display = 'flex';
-        const player = document.getElementById('battle-player');
-        player.src += "&autoplay=1";
+        document.getElementById('landing-stage').style.display = 'flex';
+        if (player && player.playVideo) {
+            player.unMute();
+            player.playVideo();
+        }
     }
 
     function enterTerminal() {
