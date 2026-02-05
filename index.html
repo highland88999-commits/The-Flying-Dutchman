@@ -3,14 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
-    <title>The Dutchman | Nexus Terminal</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <title>The Dutchman | Nexus Oracle</title>
     <style>
         :root {
             --nexus-blue: #00d4ff;
             --neon-purple: #bc13fe;
-            --border-glow: 0 0 20px rgba(188, 19, 254, 0.8), inset 0 0 15px rgba(188, 19, 254, 0.5);
-            --glass: rgba(0, 212, 255, 0.05);
+            --emerald-bloom: 0 0 25px rgba(0, 255, 136, 0.7), inset 0 0 15px rgba(0, 255, 136, 0.4);
+            --glass: rgba(0, 20, 20, 0.15);
         }
 
         * { margin:0; padding:0; box-sizing:border-box; }
@@ -20,246 +19,175 @@
             color: white; 
         }
 
-        /* --- STAGE 1: GHOST PROMPT --- */
-        #entry-curtain {
-            position: fixed; inset: 0; z-index: 6000; background: #000;
-            display: flex; justify-content: center; align-items: center;
-            cursor: pointer; transition: opacity 1.5s ease;
-        }
-        .ghost-btn {
-            padding: 30px 60px; border: 1px solid rgba(0, 212, 255, 0.1);
-            background: rgba(255, 255, 255, 0.01); border-radius: 100px;
-            color: rgba(0, 212, 255, 0.3); letter-spacing: 10px;
-            text-transform: uppercase; font-size: 0.9rem;
-            animation: pulse 3s infinite;
-        }
-
-        /* --- STAGE 2: VIDEO LANDING --- */
-        #landing-stage { 
+        /* --- IMMERSIVE LANDING --- */
+        #landing-stage {
             position: fixed; inset: 0; z-index: 5000; background: #000;
-            opacity: 0; pointer-events: none; transition: opacity 1.5s ease;
+            display: flex; justify-content: center; align-items: center;
+            cursor: pointer;
         }
-        #landing-stage.active { opacity: 1; pointer-events: all; }
-        .video-wrap { position: absolute; inset:0; overflow:hidden; }
-        #yt-player {
-            width: 100vw; height: 56.25vw; min-height: 100vh; min-width: 177.77vh;
-            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+        .full-bg {
+            position: absolute; width: 100vw; height: 56.25vw; 
+            min-height: 100vh; min-width: 177.77vh;
+            top: 50%; left: 50%; transform: translate(-50%, -50%);
+            pointer-events: none;
         }
-        .abyss-btn {
-            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
-            z-index: 5001; padding: 2.5rem 5rem; border-radius: 100px;
-            background: rgba(0,0,0,0.2); border: 2px solid var(--nexus-blue);
-            backdrop-filter: blur(5px); box-shadow: 0 0 30px var(--nexus-blue);
-            cursor: pointer; text-align: center;
-        }
-
-        /* --- STAGE 3: HOLOFRAME UI --- */
-        #canvas-container { position: fixed; inset: 0; z-index: 1; display: none; }
-        #ui-layer {
-            position: relative; z-index: 100; height: 100vh; width: 100vw;
-            display: none; flex-direction: column; align-items: center; justify-content: center;
-            opacity: 0; transition: opacity 2s ease;
+        #landing-stage h1 {
+            position: relative; z-index: 5001; font-size: 1.2rem;
+            letter-spacing: 8px; border: 1px solid var(--nexus-blue);
+            padding: 20px 40px; border-radius: 100px;
+            background: rgba(0,0,0,0.4); backdrop-filter: blur(5px);
+            text-shadow: 0 0 10px var(--nexus-blue);
         }
 
-        .holoframe {
+        /* --- TERMINAL OVERLAY --- */
+        #main-terminal {
+            position: fixed; inset: 0; z-index: 100; display: none;
+        }
+
+        /* --- ORACLE WINDOWS --- */
+        .oracle-window {
+            position: absolute; top: 45%; left: 50%; transform: translate(-50%, -50%);
+            width: min(450px, 92vw); height: 65vh;
             background: var(--glass); 
-            border: 2px solid var(--neon-purple);
-            box-shadow: var(--border-glow);
-            backdrop-filter: blur(10px);
-            padding: 2rem; border-radius: 40px;
-            width: min(500px, 92vw); text-align: center;
-            position: relative;
+            border: 2px solid #00ff88; /* Green boundary */
+            box-shadow: var(--emerald-bloom);
+            border-radius: 30px; backdrop-filter: blur(15px);
+            display: none; flex-direction: column; overflow: hidden;
+            transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        .oracle-window.active { display: flex; animation: zoomIn 0.5s ease forwards; }
+
+        .video-container { position: absolute; inset: 0; z-index: 1; overflow: hidden; }
+        .video-container iframe { 
+            width: 100%; height: 100%; transform: scale(1.5); /* Fill window */
+            pointer-events: none; opacity: 0.6;
         }
 
-        .video-embed {
-            width: 100%; aspect-ratio: 9/16; max-height: 320px;
-            margin: 15px 0; border-radius: 20px; overflow: hidden;
-            border: 1px solid var(--nexus-blue);
+        /* WORDS OVER VIDEO */
+        .content-overlay {
+            position: relative; z-index: 2; height: 100%; padding: 20px;
+            display: flex; flex-direction: column; justify-content: space-between;
+            background: linear-gradient(to bottom, rgba(0,0,0,0.4), transparent, rgba(0,0,0,0.7));
         }
 
-        /* --- SCROLLING TEXT --- */
-        .scroll-box {
-            height: 140px; overflow: hidden; position: relative;
-            mask-image: linear-gradient(transparent, black 20%, black 80%, transparent);
-            -webkit-mask-image: linear-gradient(transparent, black 20%, black 80%, transparent);
+        .scroll-text {
+            flex-grow: 1; overflow: hidden; position: relative;
+            margin: 20px 0; mask-image: linear-gradient(transparent, black 15%, black 85%, transparent);
         }
-        .scrolling-content {
-            font-family: 'Courier New', monospace; color: var(--nexus-blue);
-            font-size: 0.95rem; font-weight: bold; position: absolute; width: 100%;
-        }
-
-        /* --- CONTROLS --- */
-        .mode-toggles { display: flex; gap: 15px; margin-bottom: 20px; }
-        .tab {
-            flex: 1; padding: 12px; border: 1px solid var(--nexus-blue);
-            background: transparent; color: var(--nexus-blue); cursor: pointer;
-            border-radius: 10px; font-size: 0.7rem; letter-spacing: 1px;
-            transition: 0.3s;
-        }
-        .tab.active { background: var(--nexus-blue); color: #000; box-shadow: 0 0 15px var(--nexus-blue); }
-
-        #transmit-btn {
-            display: block; margin-top: 20px; padding: 20px;
-            background: var(--neon-purple); border: none; color: white;
-            border-radius: 50px; font-weight: bold; letter-spacing: 3px;
-            text-decoration: none; box-shadow: 0 0 25px var(--neon-purple);
+        .text-move {
+            font-family: 'Courier New', monospace; font-size: 1.1rem; font-weight: bold;
+            color: var(--nexus-blue); text-shadow: 0 2px 4px black;
+            animation: scrollText 20s linear infinite;
         }
 
-        /* --- HUD ICONS --- */
+        /* --- HUD DOCK --- */
         #hud-dock {
-            position: absolute; bottom: 30px; display: flex; gap: 30px;
+            position: absolute; bottom: 40px; left: 50%; transform: translateX(-50%);
+            display: flex; gap: 40px; z-index: 200;
         }
-        .hud-icon {
-            width: 40px; height: 40px; border: 1px solid var(--nexus-blue);
-            border-radius: 50%; display: flex; align-items: center; justify-content: center;
-            background: rgba(0, 212, 255, 0.1); cursor: pointer;
-            transition: 0.3s; opacity: 0.6;
+        .icon-btn {
+            width: 55px; height: 55px; border: 2px solid var(--nexus-blue);
+            border-radius: 15px; background: rgba(0, 212, 255, 0.15);
+            display: flex; align-items: center; justify-content: center;
+            cursor: pointer; font-size: 1.5rem; transition: 0.3s;
         }
-        .hud-icon:hover { opacity: 1; transform: scale(1.2); box-shadow: 0 0 15px var(--nexus-blue); }
+        .icon-btn.active { border-color: #00ff88; box-shadow: var(--emerald-bloom); background: rgba(0, 255, 136, 0.2); }
 
-        @keyframes pulse { 0%, 100% { opacity: 0.2; } 50% { opacity: 0.7; } }
-        .animate-scroll { animation: scrollLoop 25s linear forwards; }
-        @keyframes scrollLoop { from { transform: translateY(110%); } to { transform: translateY(-130%); } }
+        .transmit-btn {
+            padding: 15px; background: var(--neon-purple); color: white;
+            text-decoration: none; border-radius: 50px; text-align: center;
+            font-size: 0.8rem; letter-spacing: 2px; box-shadow: 0 0 20px var(--neon-purple);
+        }
+
+        @keyframes scrollText { from { transform: translateY(100%); } to { transform: translateY(-100%); } }
+        @keyframes zoomIn { from { opacity: 0; transform: translate(-50%, -40%) scale(0.9); } to { opacity: 1; transform: translate(-50%, -50%) scale(1); } }
     </style>
 </head>
 <body>
 
-<div id="entry-curtain" onclick="goCinematic()">
-    <div class="ghost-btn">INITIATE</div>
+<div id="landing-stage" onclick="initTerminal()">
+    <iframe class="full-bg" src="https://www.youtube.com/embed/H7FoA6mrOtU?autoplay=1&mute=0&controls=0&loop=1&playlist=H7FoA6mrOtU" frameborder="0"></iframe>
+    <h1>ENTER THE DUTCHMAN</h1>
 </div>
 
-<div id="landing-stage">
-    <div class="video-wrap"><div id="yt-landing"></div></div>
-    <div class="abyss-btn" onclick="enterTerminal()">
-        <h2 style="letter-spacing:5px;">THE ABYSS AWAITS</h2>
-        <span style="font-size:0.7rem; color:var(--nexus-blue);">[ CLICK TO ENTER TERMINAL ]</span>
+<div id="main-terminal">
+    <iframe class="full-bg" src="https://www.youtube.com/embed/PEaZ5XUe0Mk?autoplay=1&mute=1&controls=0&loop=1&playlist=PEaZ5XUe0Mk" frameborder="0" style="opacity: 0.4;"></iframe>
+
+    <div id="win-driver" class="oracle-window">
+        <div class="video-container">
+            <iframe src="https://www.youtube.com/embed/Q3NR_I-Sbjk?autoplay=1&mute=1&loop=1&playlist=Q3NR_I-Sbjk&controls=0" frameborder="0"></iframe>
+        </div>
+        <div class="content-overlay">
+            <h2 style="color:#00ff88">DRIVER PORTAL</h2>
+            <div class="scroll-text">
+                <div class="text-move">
+                    Stop letting your daily commute go to waste. <br><br>
+                    Turn your vehicle into a source of income by hosting ads for local and national brands. <br><br>
+                    Earn $200 per month for every decal you display. You choose the frequency.
+                </div>
+            </div>
+            <a href="mailto:dutchmanautoads@gmail.com?subject=Driver Registration" class="transmit-btn">TRANSMIT SIGNAL</a>
+        </div>
     </div>
-</div>
 
-<div id="canvas-container"></div>
-<div id="ui-layer">
-    <div class="holoframe">
-        <div class="mode-toggles">
-            <button class="tab active" id="t-driver" onclick="setMode('driver')">DRIVER PORTAL</button>
-            <button class="tab" id="t-brand" onclick="setMode('brand')">BRAND PORTAL</button>
+    <div id="win-brand" class="oracle-window">
+        <div class="video-container">
+            <iframe src="https://www.youtube.com/embed/plWz-HFnVrE?autoplay=1&mute=1&loop=1&playlist=plWz-HFnVrE&controls=0" frameborder="0"></iframe>
         </div>
-
-        <h2 id="portal-title" style="color:var(--nexus-blue); font-size: 1.5rem;">DRIVE & EARN</h2>
-
-        <div class="video-embed">
-            <iframe id="portal-video" width="100%" height="100%" src="" frameborder="0" allow="autoplay; encrypted-media"></iframe>
+        <div class="content-overlay">
+            <h2 style="color:#00ff88">BRAND EXPANSION</h2>
+            <div class="scroll-text">
+                <div class="text-move">
+                    Turn local commutes into customer leads. <br><br>
+                    Transform everyday vehicles into powerful mobile advertisements. <br><br>
+                    Verified drivers. Targeted markets. Simple flat-rate pricing.
+                </div>
+            </div>
+            <a href="mailto:dutchmanautoads@gmail.com?subject=Brand Inquiry" class="transmit-btn">TRANSMIT SIGNAL</a>
         </div>
+    </div>
 
-        <div class="scroll-box">
-            <div id="portal-text" class="scrolling-content"></div>
+    <div id="win-product" class="oracle-window">
+        <div class="content-overlay">
+            <h2 style="color:#00ff88">DATA DECRYPTED</h2>
+            <div class="scroll-text">
+                <div class="text-move">
+                    [ SYSTEM ANALYSIS ] <br><br>
+                    - Decal Tech: High-grade vinyl <br>
+                    - Magnet Options: Rapid swap tech <br>
+                    - Tracking: Signal verified <br>
+                    - Payouts: 1st of every month
+                </div>
+            </div>
+            <div style="text-align:center; color:var(--nexus-blue); font-size:0.7rem;">STATUS: ONLINE</div>
         </div>
-
-        <a id="transmit-btn" href="#">TRANSMIT SIGNAL</a>
     </div>
 
     <div id="hud-dock">
-        <div class="hud-icon" title="Terminal Settings">⚙️</div>
-        <div class="hud-icon" title="Data Link">📡</div>
-        <div class="hud-icon" title="Artemis Uplink">💎</div>
+        <div class="icon-btn" id="ic-driver" onclick="toggleWin('driver')">🏎️</div>
+        <div class="icon-btn" id="ic-brand" onclick="toggleWin('brand')">🏢</div>
+        <div class="icon-btn" id="ic-product" onclick="toggleWin('product')">📊</div>
     </div>
 </div>
 
-<div id="audio-bridge"></div>
-
 <script>
-    let mainPlayer;
-    let musicBridge;
-    const email = "dutchmanautoads@gmail.com";
-
-    // Load YouTube API
-    var tag = document.createElement('script');
-    tag.src = "https://www.youtube.com/iframe_api";
-    document.head.appendChild(tag);
-
-    function onYouTubeIframeAPIReady() {
-        mainPlayer = new YT.Player('yt-landing', {
-            videoId: 'EcTySZ_4JiQ',
-            playerVars: { 'autoplay': 0, 'controls': 0, 'mute': 0, 'loop': 1, 'playlist': 'EcTySZ_4JiQ' }
-        });
+    function initTerminal() {
+        document.getElementById('landing-stage').style.display = 'none';
+        document.getElementById('main-terminal').style.display = 'block';
+        // Open the first one automatically as requested
+        toggleWin('driver');
+        
+        // Music escalation (optional: add background player here for louder audio)
     }
 
-    function goCinematic() {
-        document.getElementById('entry-curtain').style.opacity = '0';
-        setTimeout(() => {
-            document.getElementById('entry-curtain').style.display = 'none';
-            document.getElementById('landing-stage').classList.add('active');
-            mainPlayer.playVideo();
-            // Start quiet music (Volume 20)
-            document.getElementById('audio-bridge').innerHTML = `<iframe id="bg-music" src="https://www.youtube.com/embed/videoseries?list=PLNQ3MUvaWFCDMsH6ZRGIBuBmcVzE0v7SH&autoplay=1&mute=0" allow="autoplay" style="display:none"></iframe>`;
-        }, 1000);
-    }
+    function toggleWin(target) {
+        // Reset all
+        document.querySelectorAll('.oracle-window').forEach(w => w.classList.remove('active'));
+        document.querySelectorAll('.icon-btn').forEach(i => i.classList.remove('active'));
 
-    function enterTerminal() {
-        document.getElementById('landing-stage').style.opacity = '0';
-        mainPlayer.pauseVideo();
-        setTimeout(() => {
-            document.getElementById('landing-stage').style.display = 'none';
-            document.getElementById('canvas-container').style.display = 'block';
-            document.getElementById('ui-layer').style.display = 'flex';
-            initAbyss();
-            setMode('driver');
-            // Increase volume logic (handled by browser reload/re-injection usually, but we'll simulate)
-            setTimeout(() => { document.getElementById('ui-layer').style.opacity = '1'; }, 100);
-        }, 1500);
-    }
-
-    function setMode(mode) {
-        const title = document.getElementById('portal-title');
-        const video = document.getElementById('portal-video');
-        const text = document.getElementById('portal-text');
-        const btn = document.getElementById('transmit-btn');
-
-        document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-
-        if(mode === 'driver') {
-            document.getElementById('t-driver').classList.add('active');
-            title.innerText = "DRIVE & EARN";
-            video.src = "https://www.youtube.com/embed/hxu-A3Uo5mg?autoplay=1&mute=1&loop=1&playlist=hxu-A3Uo5mg";
-            btn.href = `mailto:${email}?subject=Driver Ad Bearing Registration Request`;
-            text.innerHTML = `Stop letting your daily commute go to waste. <br><br> Turn your vehicle into income by hosting ads for brands. Earn $200/month per decal. <br><br> We handle matching and shipping. Earnings paid monthly.`;
-        } else {
-            document.getElementById('t-brand').classList.add('active');
-            title.innerText = "BRAND EXPANSION";
-            video.src = "https://www.youtube.com/embed/plWz-HFnVrE?autoplay=1&mute=1&loop=1&playlist=plWz-HFnVrE";
-            btn.href = `mailto:${email}?subject=Brand Advertising Registration Request`;
-            text.innerHTML = `Turn local commutes into customer leads. <br><br> We connect your business with verified drivers. Choose your budget and decal size. <br><br> Simple flat-rate pricing. Reach customers where they shop.`;
-        }
-
-        text.classList.remove('animate-scroll');
-        void text.offsetWidth;
-        text.classList.add('animate-scroll');
-    }
-
-    function initAbyss() {
-        const scene = new THREE.Scene();
-        const camera = new THREE.PerspectiveCamera(60, window.innerWidth/window.innerHeight, 0.1, 1000);
-        const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
-        renderer.setSize(window.innerWidth, window.innerHeight);
-        document.getElementById('canvas-container').appendChild(renderer.domElement);
-
-        const heart = new THREE.Mesh(
-            new THREE.IcosahedronGeometry(6, 1),
-            new THREE.MeshPhongMaterial({ color: 0x4d0000, wireframe: true, transparent: true, opacity: 0.1 })
-        );
-        scene.add(heart);
-
-        const light = new THREE.PointLight(0x00d4ff, 2, 50);
-        light.position.set(10, 10, 10);
-        scene.add(light);
-        scene.add(new THREE.AmbientLight(0x001133));
-        camera.position.z = 25;
-
-        function animate() {
-            requestAnimationFrame(animate);
-            heart.rotation.y += 0.002;
-            renderer.render(scene, camera);
-        }
-        animate();
+        // Activate target
+        document.getElementById('win-' + target).classList.add('active');
+        document.getElementById('ic-' + target).classList.add('active');
     }
 </script>
 </body>
