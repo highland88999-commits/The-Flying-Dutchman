@@ -33,7 +33,6 @@
             display: none; justify-content: center; align-items: center; cursor: pointer;
         }
         .full-vid { position: absolute; width: 100vw; height: 56.25vw; min-height: 100vh; min-width: 177.77vh; top: 50%; left: 50%; transform: translate(-50%, -50%); pointer-events: none; }
-        
         .abyss-btn {
             position: relative; z-index: 9001; padding: 25px 60px; border-radius: 100px;
             border: 2px solid var(--nexus-blue); background: rgba(0,0,0,0.7);
@@ -58,7 +57,7 @@
             position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
             width: min(480px, 92vw); height: 70vh;
             background: var(--glass); 
-            border: 3px solid var(--neon-purple); /* Purple Borders */
+            border: 3px solid var(--neon-purple);
             box-shadow: 0 0 25px rgba(188, 19, 254, 0.4);
             border-radius: 40px; backdrop-filter: blur(25px);
             z-index: 100; display: none; flex-direction: column; overflow: hidden;
@@ -76,15 +75,15 @@
 
         .holo-header {
             color: var(--emerald); 
-            text-shadow: var(--bloom-green); /* Green Bloom Header */
-            letter-spacing: 4px; font-size: 1.5rem; text-align: center;
+            text-shadow: var(--bloom-green);
+            letter-spacing: 4px; font-size: 1.5rem; text-align: center; margin-bottom: 10px;
         }
 
         .text-move {
             font-family: 'Courier New', monospace; font-size: 1.1rem; font-weight: bold;
-            color: var(--nexus-blue); /* Blue Text */
+            color: var(--nexus-blue); 
             text-shadow: 0 0 10px rgba(0, 212, 255, 0.5);
-            animation: scrollUp 28s linear infinite;
+            animation: scrollUp 35s linear infinite;
         }
 
         /* --- DOCK --- */
@@ -101,7 +100,7 @@
         .icon.active { border-color: var(--emerald); box-shadow: var(--bloom-green); }
 
         @keyframes breathe { 0%, 100% { opacity: 0.4; } 50% { opacity: 1; } }
-        @keyframes scrollUp { from { transform: translateY(110%); } to { transform: translateY(-130%); } }
+        @keyframes scrollUp { from { transform: translateY(100%); } to { transform: translateY(-150%); } }
         @keyframes zoomIn { from { opacity: 0; transform: translate(-50%, -45%) scale(0.9); } to { opacity: 1; transform: translate(-50%, -50%) scale(1); } }
     </style>
 </head>
@@ -112,7 +111,8 @@
 </div>
 
 <div id="landing-stage" onclick="enterTerminal()">
-    <div id="landing-audio-engine"></div> <iframe id="battle-player" class="full-vid" 
+    <div id="landing-audio-engine"></div>
+    <iframe id="battle-player" class="full-vid" 
             src="https://www.youtube.com/embed/H7FoA6mrOtU?enablejsapi=1&mute=1&controls=0&loop=1&playlist=H7FoA6mrOtU" 
             frameborder="0"></iframe>
     <div class="abyss-btn">ENTER THE ABYSS</div>
@@ -120,7 +120,8 @@
 
 <div id="main-terminal">
     <div id="bg-shield" onclick="closeAllWindows()"></div>
-    <div id="terminal-audio-engine"></div> <iframe class="full-vid" src="https://www.youtube.com/embed/PEaZ5XUe0Mk?autoplay=1&mute=1&controls=0&loop=1&playlist=PEaZ5XUe0Mk" frameborder="0" style="opacity:0.35"></iframe>
+    <div id="terminal-audio-engine"></div>
+    <iframe class="full-vid" src="https://www.youtube.com/embed/PEaZ5XUe0Mk?autoplay=1&mute=1&controls=0&loop=1&playlist=PEaZ5XUe0Mk" frameborder="0" style="opacity:0.35"></iframe>
 
     <div id="win-oracle">
         <video class="oracle-mp4" autoplay loop muted playsinline>
@@ -129,33 +130,36 @@
     </div>
 
     <div id="win-driver" class="holo-window">
-        <div class="video-content">
-            <video autoplay loop muted playsinline>
-                <source src="https://raw.githubusercontent.com/highland88999-commits/The-Flying-Dutchman/main/hailuo_1767800503.mp4" type="video/mp4">
-            </video>
-        </div>
+        <div class="video-content"><video autoplay loop muted playsinline><source src="https://raw.githubusercontent.com/highland88999-commits/The-Flying-Dutchman/main/hailuo_1767800503.mp4" type="video/mp4"></video></div>
         <div class="text-overlay">
             <h2 class="holo-header">DRIVER PORTAL</h2>
-            <div style="flex-grow:1; overflow:hidden; position:relative; mask-image: linear-gradient(transparent, black 15%, black 85%, transparent);">
-                <div class="text-move">
-                    Stop letting your daily commute go to waste. <br><br> Earn $200/month per decal. Hosting ads has never been easier.
-                </div>
-            </div>
+            <div style="flex-grow:1; overflow:hidden; position:relative; mask-image: linear-gradient(transparent, black 15%, black 85%, transparent);"><div class="text-move">Stop letting your daily commute go to waste. Earn $200/month per decal. Hosting ads has never been easier.</div></div>
             <a href="mailto:dutchmanautoads@gmail.com" style="padding:15px; background:var(--neon-purple); border-radius:50px; text-align:center; text-decoration:none; color:white; font-weight:bold;">TRANSMIT SIGNAL</a>
         </div>
     </div>
 
     <div id="win-brand" class="holo-window">
-        <div class="video-content">
-            <video autoplay loop muted playsinline>
-                <source src="https://raw.githubusercontent.com/highland88999-commits/The-Flying-Dutchman/main/hailuo_1767800359.mp4" type="video/mp4">
-            </video>
-        </div>
+        <div class="video-content"><video autoplay loop muted playsinline><source src="https://raw.githubusercontent.com/highland88999-commits/The-Flying-Dutchman/main/hailuo_1767800359.mp4" type="video/mp4"></video></div>
         <div class="text-overlay">
             <h2 class="holo-header">BRAND EXPANSION</h2>
+            <div style="flex-grow:1; overflow:hidden; position:relative; mask-image: linear-gradient(transparent, black 15%, black 85%, transparent);"><div class="text-move">Transform vehicles into mobile ads. Reach targeted markets with verified drivers. Simple $300/mo flat-rate.</div></div>
+            <a href="mailto:dutchmanautoads@gmail.com" style="padding:15px; background:var(--neon-purple); border-radius:50px; text-align:center; text-decoration:none; color:white; font-weight:bold;">TRANSMIT SIGNAL</a>
+        </div>
+    </div>
+
+    <div id="win-product" class="holo-window">
+        <div class="video-content"><video autoplay loop muted playsinline><source src="https://raw.githubusercontent.com/highland88999-commits/The-Flying-Dutchman/main/hailuo_1767805111.mp4" type="video/mp4"></video></div>
+        <div class="text-overlay">
+            <h2 class="holo-header">PRODUCT PORTAL</h2>
             <div style="flex-grow:1; overflow:hidden; position:relative; mask-image: linear-gradient(transparent, black 15%, black 85%, transparent);">
-                <div class="text-move">
-                    Transform vehicles into mobile ads. Reach targeted markets with verified drivers. Simple $300/mo flat-rate.
+                <div class="text-move" style="animation-duration: 45s;">
+                    Discover premium car door decals for mobile advertising. <br><br>
+                    Types: Weather-resistant adhesive decals, fully customizable with templates or uploaded designs. Custom shapes available. <br><br>
+                    Sizes: Custom sizes tailored to your vehicle—ideal for car doors, pickup truck sides, van panels. <br><br>
+                    Options: Clear vinyl for light designs, white vinyl for vibrant colors and images. Full-color printing. <br><br>
+                    Materials: Durable, waterproof vinyl with removable adhesive. Lasts up to 3 years. <br><br>
+                    Installation: Clean surface, peel and apply, smooth out bubbles. Wait for paint curing before use. <br><br>
+                    Durability: Withstands driving and car washes; removable with heat or adhesive remover.
                 </div>
             </div>
             <a href="mailto:dutchmanautoads@gmail.com" style="padding:15px; background:var(--neon-purple); border-radius:50px; text-align:center; text-decoration:none; color:white; font-weight:bold;">TRANSMIT SIGNAL</a>
@@ -173,23 +177,14 @@
     function initLanding() {
         document.getElementById('entry-gate').style.display = 'none';
         document.getElementById('landing-stage').style.display = 'flex';
-        
-        // Start Eminem Soundtrack for Landing Stage
-        document.getElementById('landing-audio-engine').innerHTML = `
-            <iframe width="0" height="0" src="https://www.youtube.com/embed/videoseries?list=PLNQ3MUvaWFCDMsH6ZRGIBuBmcVzE0v7SH&autoplay=1" frameborder="0" allow="autoplay"></iframe>
-        `;
+        document.getElementById('landing-audio-engine').innerHTML = `<iframe width="0" height="0" src="https://www.youtube.com/embed/videoseries?list=PLNQ3MUvaWFCDMsH6ZRGIBuBmcVzE0v7SH&autoplay=1" frameborder="0" allow="autoplay"></iframe>`;
     }
 
     function enterTerminal() {
         document.getElementById('landing-stage').style.display = 'none';
         document.getElementById('main-terminal').style.display = 'block';
-        
-        // Clear Eminem and start Wednesday: Bad Moon Rising
         document.getElementById('landing-audio-engine').innerHTML = "";
-        document.getElementById('terminal-audio-engine').innerHTML = `
-            <iframe width="0" height="0" src="https://www.youtube.com/embed/PKsvThMFZII?autoplay=1" frameborder="0" allow="autoplay"></iframe>
-        `;
-        
+        document.getElementById('terminal-audio-engine').innerHTML = `<iframe width="0" height="0" src="https://www.youtube.com/embed/PKsvThMFZII?autoplay=1" frameborder="0" allow="autoplay"></iframe>`;
         toggleWin('driver');
     }
 
