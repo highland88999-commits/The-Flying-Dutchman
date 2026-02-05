@@ -9,11 +9,9 @@
         :root {
             --nexus-blue: #00d4ff;
             --neon-purple: #bc13fe;
-            --deep-purple: #2e004f;
             --bg-dark: #05011a;
             --glass: rgba(5, 1, 26, 0.85);
-            --border: rgba(0, 242, 255, 0.35);
-            --glow: 0 0 25px rgba(188, 19, 254, 0.4);
+            --border: rgba(0, 242, 255, 0.2);
         }
 
         * { margin:0; padding:0; box-sizing:border-box; }
@@ -23,32 +21,56 @@
             color: white; 
         }
 
-        /* --- STAGE 1: ENTRY --- */
+        /* --- STAGE 1: ULTRA-TRANSPARENT CURTAIN --- */
         #entry-curtain {
             position: fixed; inset: 0; z-index: 6000; background: #000;
             display: flex; justify-content: center; align-items: center;
-            cursor: pointer; transition: opacity 1s ease;
+            cursor: pointer; transition: opacity 1.5s ease;
         }
 
-        /* --- STAGE 2: IMMERSIVE VIDEO LANDING --- */
+        /* The Ghost Button requested */
+        .ghost-prompt {
+            padding: 40px;
+            border: 1px solid rgba(0, 212, 255, 0.1); /* Very faint border */
+            background: rgba(255, 255, 255, 0.02); /* Nearly invisible */
+            border-radius: 100px;
+            text-align: center;
+            backdrop-filter: blur(2px);
+        }
+
+        .ghost-prompt h1 {
+            color: rgba(0, 212, 255, 0.2); /* Very transparent blue */
+            letter-spacing: 15px;
+            font-size: 1.2rem;
+            text-transform: uppercase;
+        }
+
+        /* --- STAGE 2: VIDEO LANDING --- */
         #landing-stage { 
             position: fixed; inset: 0; z-index: 5000; background: #000;
             opacity: 0; pointer-events: none; transition: opacity 1.5s ease;
-            display: flex; justify-content: center; align-items: center;
         }
         #landing-stage.active { opacity: 1; pointer-events: all; cursor: pointer; }
 
         .video-background {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            pointer-events: none;
+            pointer-events: none; overflow: hidden;
         }
-        iframe { pointer-events: none; width: 100vw; height: 56.25vw; min-height: 100vh; min-width: 177.77vh; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); }
+        
+        /* Ensures full cover without bars */
+        #yt-player {
+            width: 100vw; height: 56.25vw; min-height: 100vh; min-width: 177.77vh;
+            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+        }
 
-        #landing-overlay {
-            position: relative; z-index: 5001; text-align: center;
-            background: rgba(0,0,0,0.6); padding: 3rem; border-radius: 100px;
-            backdrop-filter: blur(10px); border: 1px solid var(--nexus-blue);
-            box-shadow: 0 0 30px var(--nexus-blue);
+        .abyss-prompt {
+            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            z-index: 5001; text-align: center; width: 80%; max-width: 400px;
+            padding: 30px; border-radius: 100px;
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px solid var(--nexus-blue);
+            backdrop-filter: blur(8px);
+            box-shadow: 0 0 30px rgba(0, 212, 255, 0.4);
         }
 
         /* --- STAGE 3: COMMAND TERMINAL --- */
@@ -61,53 +83,46 @@
         }
 
         .glass-panel {
-            background: var(--glass); border: 2px solid var(--border);
-            backdrop-filter: blur(25px); padding: 2rem; border-radius: 30px;
-            width: min(500px, 95vw); text-align: center;
-            box-shadow: var(--glow);
+            background: var(--glass); border: 1px solid var(--border);
+            backdrop-filter: blur(30px); padding: 2rem; border-radius: 30px;
+            width: min(450px, 92vw); text-align: center;
+            box-shadow: 0 0 40px rgba(188, 19, 254, 0.2);
         }
 
-        /* Video Embed Area */
         .video-embed-box {
-            width: 100%; aspect-ratio: 9/16; max-height: 300px;
+            width: 100%; aspect-ratio: 9/16; max-height: 350px;
             background: #000; border: 1px solid var(--nexus-blue);
-            margin: 15px 0; border-radius: 15px; overflow: hidden;
+            margin: 15px 0; border-radius: 20px; overflow: hidden;
+            box-shadow: inset 0 0 15px var(--nexus-blue);
         }
 
         .mode-switcher { display: flex; gap: 10px; justify-content: center; margin-bottom: 20px; }
+        
         .tab-btn {
-            flex: 1; background: rgba(0, 212, 255, 0.1); border: 1px solid var(--nexus-blue);
+            flex: 1; background: transparent; border: 1px solid var(--nexus-blue);
             color: var(--nexus-blue); padding: 12px; cursor: pointer;
-            font-size: 0.7rem; text-transform: uppercase; letter-spacing: 1px;
-            transition: 0.3s; border-radius: 8px;
+            font-size: 0.7rem; text-transform: uppercase; border-radius: 8px;
+            transition: 0.4s;
         }
-        .tab-btn.active { background: var(--nexus-blue); color: #000; box-shadow: 0 0 15px var(--nexus-blue); }
+        .tab-btn.active { background: var(--nexus-blue); color: #000; box-shadow: 0 0 20px var(--nexus-blue); }
 
         #action-btn {
-            margin-top: 15px; width: 100%; padding: 18px; 
+            margin-top: 10px; width: 100%; padding: 20px; 
             background: var(--neon-purple); border: none; color: white; 
-            font-weight: bold; letter-spacing: 2px; cursor: pointer;
-            border-radius: 50px; box-shadow: 0 0 20px var(--neon-purple);
-            text-decoration: none; display: inline-block;
+            font-weight: bold; letter-spacing: 3px; cursor: pointer;
+            border-radius: 50px; box-shadow: 0 0 25px var(--neon-purple);
+            text-decoration: none; display: block;
         }
 
-        #hud-data {
-            position: absolute; bottom: 15px; width: 100%; display: flex; 
-            justify-content: space-between; padding: 0 20px;
-            font-family: 'Courier New', monospace; font-size: 9px;
-            color: var(--nexus-blue); opacity: 0.6; pointer-events: none;
-        }
-
-        .pulse { animation: pulseFade 2s infinite; }
-        @keyframes pulseFade { 0%, 100% { opacity: 0.4; } 50% { opacity: 1; } }
+        .pulse { animation: pulseFade 2.5s infinite; }
+        @keyframes pulseFade { 0%, 100% { opacity: 0.2; } 50% { opacity: 0.8; } }
     </style>
 </head>
 <body>
 
 <div id="entry-curtain" onclick="unlockCinematic()">
-    <div style="text-align:center;">
-        <h1 style="letter-spacing:10px; color:var(--nexus-blue); font-size: 1.5rem;">THE DUTCHMAN</h1>
-        <p class="pulse">[ INITIATE QUANTUM LINK ]</p>
+    <div class="ghost-prompt pulse">
+        <h1>Initiate</h1>
     </div>
 </div>
 
@@ -115,9 +130,9 @@
     <div class="video-background">
         <div id="yt-player"></div>
     </div>
-    <div id="landing-overlay">
-        <h2 style="letter-spacing:4px; font-size: 1.2rem;">THE ABYSS AWAITS</h2>
-        <p class="pulse" style="color:var(--nexus-blue); font-size: 0.7rem; margin-top:10px;">[ CLICK TO ENTER TERMINAL ]</p>
+    <div class="abyss-prompt">
+        <h2 style="letter-spacing:4px; font-size: 1rem;">THE ABYSS AWAITS</h2>
+        <p class="pulse" style="color:var(--nexus-blue); font-size: 0.65rem; margin-top:8px;">[ CLICK TO ENTER TERMINAL ]</p>
     </div>
 </div>
 
@@ -129,38 +144,37 @@
             <button class="tab-btn" id="btn-brand" onclick="setMode('brand')">Brand Portal</button>
         </div>
 
-        <h2 id="panel-title" style="color:var(--nexus-blue); font-size: 1.4rem;">DRIVE & EARN</h2>
+        <h2 id="panel-title" style="color:var(--nexus-blue); font-size: 1.4rem; margin-bottom: 5px;">DRIVE & EARN</h2>
         
         <div class="video-embed-box">
-            <iframe id="shorts-frame" width="100%" height="100%" src="" frameborder="0" allow="autoplay; encrypted-media"></iframe>
+            <iframe id="shorts-frame" width="100%" height="100%" src="" frameborder="0" allow="autoplay; encrypted-media; picture-in-picture"></iframe>
         </div>
 
         <a id="action-btn">TRANSMIT SIGNAL</a>
     </div>
-
-    <div id="hud-data">
-        <span>STATUS: ENCRYPTED</span>
-        <span>LINK: ARTEMIS_SYMB_v2.6</span>
-    </div>
 </div>
 
-<div id="hidden-player" style="position: absolute; left: -9999px;"></div>
+<div id="hidden-audio-container" style="display:none"></div>
 
 <script>
     let currentMode = 'driver';
     const emailBase = "mailto:dutchmanautoads@gmail.com";
     
-    // YouTube API
+    // API Initialization
     var tag = document.createElement('script');
     tag.src = "https://www.youtube.com/iframe_api";
     var firstScriptTag = document.getElementsByTagName('script')[0];
     firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
 
-    var player;
+    var mainPlayer;
     function onYouTubeIframeAPIReady() {
-        player = new YT.Player('yt-player', {
+        mainPlayer = new YT.Player('yt-player', {
             videoId: 'EcTySZ_4JiQ',
-            playerVars: { 'autoplay': 0, 'controls': 0, 'mute': 0, 'loop': 1, 'playlist': 'EcTySZ_4JiQ' }
+            playerVars: { 
+                'autoplay': 0, 'controls': 0, 'mute': 0, 
+                'loop': 1, 'playlist': 'EcTySZ_4JiQ',
+                'rel': 0, 'showinfo': 0, 'modestbranding': 1
+            }
         });
     }
 
@@ -169,21 +183,24 @@
         setTimeout(() => {
             document.getElementById('entry-curtain').style.display = 'none';
             document.getElementById('landing-stage').classList.add('active');
-            player.playVideo();
-            // Start hidden background playlist
-            document.getElementById('hidden-player').innerHTML = `<iframe src="https://www.youtube.com/embed/videoseries?list=PLNQ3MUvaWFCDMsH6ZRGIBuBmcVzE0v7SH&autoplay=1" allow="autoplay"></iframe>`;
-        }, 1000);
+            if(mainPlayer && mainPlayer.playVideo) mainPlayer.playVideo();
+            
+            // Background Music Tether
+            document.getElementById('hidden-audio-container').innerHTML = 
+                `<iframe src="https://www.youtube.com/embed/videoseries?list=PLNQ3MUvaWFCDMsH6ZRGIBuBmcVzE0v7SH&autoplay=1" allow="autoplay"></iframe>`;
+        }, 1200);
     }
 
     function initCommandCenter() {
         document.getElementById('landing-stage').style.opacity = '0';
-        player.pauseVideo();
+        if(mainPlayer && mainPlayer.pauseVideo) mainPlayer.pauseVideo();
+        
         setTimeout(() => {
             document.getElementById('landing-stage').style.display = 'none';
             document.getElementById('canvas-container').style.display = 'block';
             document.getElementById('ui-layer').style.display = 'flex';
-            initAbyss();
-            setMode('driver'); // Default mode
+            initAbyssScene();
+            setMode('driver'); 
             setTimeout(() => { document.getElementById('ui-layer').style.opacity = '1'; }, 100);
         }, 1500);
     }
@@ -209,30 +226,30 @@
         }
     }
 
-    // --- THREE.JS ABYSS ENGINE ---
-    function initAbyss() {
+    function initAbyssScene() {
         const scene = new THREE.Scene();
         scene.fog = new THREE.FogExp2(0x000408, 0.02);
         const camera = new THREE.PerspectiveCamera(60, window.innerWidth/window.innerHeight, 0.1, 1000);
-        const renderer = new THREE.WebGLRenderer({ antialias: true });
+        const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
         renderer.setSize(window.innerWidth, window.innerHeight);
         document.getElementById('canvas-container').appendChild(renderer.domElement);
 
         const heart = new THREE.Mesh(
             new THREE.IcosahedronGeometry(6, 1), 
-            new THREE.MeshPhongMaterial({ color: 0x4d0000, wireframe: true, transparent: true, opacity: 0.2 })
+            new THREE.MeshPhongMaterial({ color: 0x4d0000, wireframe: true, transparent: true, opacity: 0.15 })
         );
         scene.add(heart);
 
-        const light = new THREE.PointLight(0x00d4ff, 2, 50);
+        const light = new THREE.PointLight(0x00d4ff, 1.5, 50);
         light.position.set(10, 10, 10);
         scene.add(light);
         scene.add(new THREE.AmbientLight(0x001133));
-        camera.position.z = 30;
+        camera.position.z = 25;
 
         function animate() {
             requestAnimationFrame(animate);
-            heart.rotation.y += 0.003;
+            heart.rotation.y += 0.002;
+            heart.rotation.x += 0.001;
             renderer.render(scene, camera);
         }
         animate();
