@@ -27,7 +27,7 @@
             text-shadow: 0 0 10px var(--nexus-blue); animation: breathe 3s infinite;
         }
 
-        /* --- STAGE 2: LANDING (EMINEM + BATTLE) --- */
+        /* --- STAGE 2: LANDING --- */
         #landing-stage {
             position: fixed; inset: 0; z-index: 9000; background: #000;
             display: none; justify-content: center; align-items: center; cursor: pointer;
@@ -36,7 +36,6 @@
             position: absolute; width: 100vw; height: 56.25vw; min-height: 100vh; min-width: 177.77vh; 
             top: 50%; left: 50%; transform: translate(-50%, -50%); pointer-events: none; 
         }
-        
         .abyss-btn {
             position: relative; z-index: 9001; padding: 25px 60px; border-radius: 100px;
             border: 2px solid var(--nexus-blue); background: rgba(0,0,0,0.7);
@@ -46,22 +45,22 @@
 
         /* --- STAGE 3: MAIN TERMINAL --- */
         #main-terminal { position: fixed; inset: 0; z-index: 100; display: none; }
+        #bg-shield { position: absolute; inset: 0; z-index: 5; }
 
-        /* --- THE ORACLE (SHRUNK & TRANSPARENT) --- */
+        /* --- THE ORACLE (CLICKABLE LINK) --- */
         #win-oracle {
             position: absolute; top: 40%; left: 50%; transform: translate(-50%, -50%);
             width: 280px; height: 280px; border-radius: 50%;
             border: 2px solid rgba(0, 212, 255, 0.4); 
-            overflow: hidden; z-index: 10; opacity: 0.6; pointer-events: none;
+            overflow: hidden; z-index: 50; opacity: 0.6; cursor: pointer;
         }
-        .oracle-mp4 { width: 100%; height: 100%; object-fit: cover; transform: scale(1.1); }
+        .oracle-mp4 { width: 100%; height: 100%; object-fit: cover; transform: scale(1.1); pointer-events: none; }
 
-        /* --- HOLOFRAMES (PURPLE BORDER, GREEN HEADERS) --- */
+        /* --- HOLOFRAMES --- */
         .holo-window {
             position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
-            width: min(480px, 92vw); height: 70vh;
-            background: var(--glass); 
-            border: 3px solid var(--neon-purple);
+            width: min(520px, 92vw); height: 75vh;
+            background: var(--glass); border: 3px solid var(--neon-purple);
             box-shadow: 0 0 25px rgba(188, 19, 254, 0.4);
             border-radius: 40px; backdrop-filter: blur(25px);
             z-index: 100; display: none; flex-direction: column; overflow: hidden;
@@ -78,19 +77,31 @@
         }
 
         .holo-header {
-            color: var(--emerald); 
-            text-shadow: var(--bloom-green);
-            letter-spacing: 4px; font-size: 1.5rem; text-align: center;
+            color: var(--emerald); text-shadow: var(--bloom-green);
+            letter-spacing: 4px; font-size: 1.5rem; text-align: center; margin-bottom: 10px;
         }
 
+        /* Standard Auto-Scroll */
         .text-move {
             font-family: 'Courier New', monospace; font-size: 1.1rem; font-weight: bold;
-            color: var(--nexus-blue);
-            text-shadow: 0 0 10px rgba(0, 212, 255, 0.5);
-            animation: scrollUp 28s linear infinite;
+            color: var(--nexus-blue); text-shadow: 0 0 10px rgba(0, 212, 255, 0.5);
+            animation: scrollUp 35s linear infinite;
         }
 
-        /* --- DOCK --- */
+        /* Manual Scroll Centered for Product */
+        .product-scroll {
+            overflow-y: auto; text-align: center; color: var(--nexus-blue);
+            font-family: 'Courier New', monospace; font-size: 1rem;
+            padding-right: 10px; scrollbar-width: thin;
+            scrollbar-color: var(--neon-purple) transparent;
+        }
+
+        .dispatch-bonus {
+            margin-top: 30px; border: 1px dashed var(--emerald); padding: 15px;
+            color: var(--emerald); text-transform: uppercase; font-size: 0.85rem;
+            background: rgba(0, 255, 136, 0.1);
+        }
+
         #hud-dock {
             position: absolute; bottom: 40px; left: 50%; transform: translateX(-50%);
             display: flex; gap: 40px; z-index: 1000;
@@ -104,7 +115,7 @@
         .icon.active { border-color: var(--emerald); box-shadow: var(--bloom-green); }
 
         @keyframes breathe { 0%, 100% { opacity: 0.4; } 50% { opacity: 1; } }
-        @keyframes scrollUp { from { transform: translateY(110%); } to { transform: translateY(-130%); } }
+        @keyframes scrollUp { from { transform: translateY(100%); } to { transform: translateY(-160%); } }
         @keyframes zoomIn { from { opacity: 0; transform: translate(-50%, -45%) scale(0.9); } to { opacity: 1; transform: translate(-50%, -50%) scale(1); } }
     </style>
 </head>
@@ -115,101 +126,58 @@
 </div>
 
 <div id="landing-stage" onclick="enterTerminal()">
+    <div id="landing-audio-engine"></div>
     <iframe id="battle-player" class="full-vid" 
-            src="https://www.youtube.com/embed/H7FoA6mrOtU?enablejsapi=1&autoplay=1&mute=0&controls=0&loop=1&playlist=H7FoA6mrOtU&rel=0" 
-            frameborder="0" allow="autoplay"></iframe>
+            src="https://www.youtube.com/embed/H7FoA6mrOtU?enablejsapi=1&mute=1&controls=0&loop=1&playlist=H7FoA6mrOtU" 
+            frameborder="0"></iframe>
     <div class="abyss-btn">ENTER THE ABYSS</div>
 </div>
 
 <div id="main-terminal">
     <div id="bg-shield" onclick="closeAllWindows()"></div>
-    <div id="terminal-audio-engine"></div> 
+    <div id="terminal-audio-engine"></div>
     <iframe class="full-vid" src="https://www.youtube.com/embed/PEaZ5XUe0Mk?autoplay=1&mute=1&controls=0&loop=1&playlist=PEaZ5XUe0Mk" frameborder="0" style="opacity:0.35"></iframe>
 
-    <div id="win-oracle">
+    <div id="win-oracle" onclick="window.open('https://architect-artemis.vercel.app/', '_blank')">
         <video class="oracle-mp4" autoplay loop muted playsinline>
             <source src="https://raw.githubusercontent.com/highland88999-commits/The-Flying-Dutchman/main/hailuo_1768837219.mp4" type="video/mp4">
         </video>
     </div>
 
-    <!-- DRIVER WINDOW -->
     <div id="win-driver" class="holo-window">
-        <div class="video-content">
-            <video autoplay loop muted playsinline>
-                <source src="https://raw.githubusercontent.com/highland88999-commits/The-Flying-Dutchman/main/hailuo_1767800503.mp4" type="video/mp4">
-            </video>
-        </div>
+        <div class="video-content"><video autoplay loop muted playsinline><source src="https://raw.githubusercontent.com/highland88999-commits/The-Flying-Dutchman/main/hailuo_1767800503.mp4" type="video/mp4"></video></div>
         <div class="text-overlay">
             <h2 class="holo-header">DRIVER PORTAL</h2>
-            <div style="flex-grow:1; overflow:hidden; position:relative; mask-image: linear-gradient(transparent, black 15%, black 85%, transparent);">
-                <div class="text-move">
-                    Stop letting your daily commute go to waste. <br><br> Earn $200/month per decal. Hosting ads has never been easier.
-                </div>
-            </div>
+            <div style="flex-grow:1; overflow:hidden; position:relative; mask-image: linear-gradient(transparent, black 15%, black 85%, transparent);"><div class="text-move">Stop letting your daily commute go to waste. Earn $200/month per decal. Hosting ads has never been easier.</div></div>
             <a href="mailto:dutchmanautoads@gmail.com" style="padding:15px; background:var(--neon-purple); border-radius:50px; text-align:center; text-decoration:none; color:white; font-weight:bold;">TRANSMIT SIGNAL</a>
         </div>
     </div>
 
-    <!-- BRAND WINDOW -->
     <div id="win-brand" class="holo-window">
-        <div class="video-content">
-            <video autoplay loop muted playsinline>
-                <source src="https://raw.githubusercontent.com/highland88999-commits/The-Flying-Dutchman/main/hailuo_1767800359.mp4" type="video/mp4">
-            </video>
-        </div>
+        <div class="video-content"><video autoplay loop muted playsinline><source src="https://raw.githubusercontent.com/highland88999-commits/The-Flying-Dutchman/main/hailuo_1767800359.mp4" type="video/mp4"></video></div>
         <div class="text-overlay">
             <h2 class="holo-header">BRAND EXPANSION</h2>
-            <div style="flex-grow:1; overflow:hidden; position:relative; mask-image: linear-gradient(transparent, black 15%, black 85%, transparent);">
-                <div class="text-move">
-                    Transform vehicles into mobile ads. Reach targeted markets with verified drivers. Simple $300/mo flat-rate.
-                </div>
-            </div>
+            <div style="flex-grow:1; overflow:hidden; position:relative; mask-image: linear-gradient(transparent, black 15%, black 85%, transparent);"><div class="text-move">Transform vehicles into mobile ads. Reach targeted markets with verified drivers. Simple $300/mo flat-rate.</div></div>
             <a href="mailto:dutchmanautoads@gmail.com" style="padding:15px; background:var(--neon-purple); border-radius:50px; text-align:center; text-decoration:none; color:white; font-weight:bold;">TRANSMIT SIGNAL</a>
         </div>
     </div>
 
-    <!-- PRODUCT WINDOW (new content on top) -->
     <div id="win-product" class="holo-window">
-        <div class="video-content">
-            <video autoplay loop muted playsinline>
-                <source src="https://raw.githubusercontent.com/highland88999-commits/The-Flying-Dutchman/main/hailuo_1767805111.mp4" type="video/mp4">
-            </video>
-        </div>
+        <div class="video-content"><video autoplay loop muted playsinline><source src="https://raw.githubusercontent.com/highland88999-commits/The-Flying-Dutchman/main/hailuo_1767805111.mp4" type="video/mp4"></video></div>
         <div class="text-overlay">
             <h2 class="holo-header">PRODUCT PORTAL</h2>
-            <div style="flex-grow:1; overflow:auto; position:relative; mask-image: linear-gradient(transparent, black 15%, black 85%, transparent); padding-right: 10px;">
-                <div style="font-family: 'Courier New', monospace; font-size: 1.1rem; font-weight: bold; color: var(--nexus-blue); text-shadow: 0 0 10px rgba(0, 212, 255, 0.5); line-height: 1.5;">
-                    <strong>PREMIUM CAR DOOR DECALS – MOBILE ADVERTISING</strong><br><br>
-
-                    <strong>Types:</strong> Weather-resistant adhesive vinyl decals, fully customizable. Use templates or upload your own artwork. Custom die-cut shapes available.<br><br>
-
-                    <strong>Sizes:</strong> Fully custom — perfectly sized for car doors, pickup truck panels, van sides, SUVs. Most popular: 12″×18″ to 24″×36″.<br><br>
-
-                    <strong>Material Options:</strong><br>
-                    • Clear vinyl – great for light or see-through designs<br>
-                    • White vinyl – best for vibrant full-color graphics & opacity<br><br>
-
-                    <strong>Modifications & Best Practices:</strong><br>
-                    • Avoid very fine details in custom shapes<br>
-                    • Use high-resolution artwork (300 DPI+)<br>
-                    • Keep important text & logos ≥0.25″ from edges<br>
-                    • Vector files (.ai, .eps) preferred for sharp cuts<br><br>
-
-                    <strong>Durability:</strong> Outdoor-grade, waterproof vinyl. Rated 3–5 years with proper application. Withstands car washes, rain, highway speeds.<br><br>
-
-                    <strong>Installation:</strong> Clean surface thoroughly → peel backing → apply with squeegee → remove bubbles. Wait 24–48 hrs after vehicle paint cure.<br><br>
-
-                    <strong>Removal:</strong> Heat with hairdryer + adhesive remover → peels clean without damage to most factory paint.<br><br>
-
-                    Turn any vehicle into a powerful mobile billboard — durable, professional, eye-catching.<br><br>
-
-                    ────────────────────────────────────────<br><br>
-
-                    Stop letting your daily commute go to waste. <br>
-                    Earn $200/month per decal. Hosting ads has never been easier.
+            <div class="product-scroll">
+                <strong>PREMIUM CAR DOOR DECALS</strong><br><br>
+                Weather-resistant adhesive vinyl decals. Fully customizable with templates or uploaded artwork. Durable, waterproof, and rated for 3-5 years of mobile use.<br><br>
+                Sizes are tailored to your specific vehicle panels. Installation is a simple peel-and-apply process, and removal is paint-safe with mild heat.<br><br>
+                
+                <div class="dispatch-bonus">
+                    <strong>DISPATCH PROTOCOL UNLOCKED</strong><br>
+                    Success of this project will create a dispatch role paying $35/successful job.<br>
+                    Activation: Post first 10 successful driver/company matches.
                 </div>
             </div>
-            <a href="mailto:dutchmanautoads@gmail.com" style="padding:15px; background:var(--neon-purple); border-radius:50px; text-align:center; text-decoration:none; color:white; font-weight:bold; margin-top:15px;">TRANSMIT SIGNAL</a>
+            <a href="mailto:dutchmanautoads@gmail.com" style="padding:15px; background:var(--neon-purple); border-radius:50px; text-align:center; text-decoration:none; color:white; font-weight:bold; margin-top:10px;">TRANSMIT SIGNAL</a>
         </div>
     </div>
 
@@ -224,32 +192,22 @@
     function initLanding() {
         document.getElementById('entry-gate').style.display = 'none';
         document.getElementById('landing-stage').style.display = 'flex';
-        
-        // Eminem playlist starts automatically with sound
-        document.getElementById('landing-audio-engine').innerHTML = `
-            <iframe width="0" height="0" src="https://www.youtube.com/embed/videoseries?list=PLNQ3MUvaWFCDMsH6ZRGIBuBmcVzE0v7SH&autoplay=1" frameborder="0" allow="autoplay"></iframe>
-        `;
+        // EMINEM START
+        document.getElementById('landing-audio-engine').innerHTML = `<iframe width="0" height="0" src="https://www.youtube.com/embed/videoseries?list=PLNQ3MUvaWFCDMsH6ZRGIBuBmcVzE0v7SH&autoplay=1" frameborder="0" allow="autoplay"></iframe>`;
     }
 
     function enterTerminal() {
         document.getElementById('landing-stage').style.display = 'none';
         document.getElementById('main-terminal').style.display = 'block';
-        
-        // Stop Eminem playlist
         document.getElementById('landing-audio-engine').innerHTML = "";
-        
-        // Start terminal background music
-        document.getElementById('terminal-audio-engine').innerHTML = `
-            <iframe width="0" height="0" src="https://www.youtube.com/embed/PKsvThMFZII?autoplay=1" frameborder="0" allow="autoplay"></iframe>
-        `;
-        
+        // WEDNESDAY/PLAYLIST START
+        document.getElementById('terminal-audio-engine').innerHTML = `<iframe width="0" height="0" src="https://www.youtube.com/embed/PKsvThMFZII?list=RDPKsvThMFZII&playnext=1&autoplay=1" frameborder="0" allow="autoplay"></iframe>`;
         toggleWin('driver');
     }
 
     function toggleWin(id) {
         const win = document.getElementById('win-' + id);
         const icon = document.getElementById('ic-' + id);
-        if (!win) return;
         if (win.classList.contains('active')) {
             win.classList.remove('active');
             icon.classList.remove('active');
