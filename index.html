@@ -3,170 +3,157 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
-    <title>The Dutchman | Nexus Oracle</title>
+    <title>Olympus | Dutchman Nexus</title>
     <style>
         :root {
             --nexus-blue: #00d4ff;
             --neon-purple: #bc13fe;
-            --emerald-bloom: 0 0 25px rgba(0, 255, 136, 0.7), inset 0 0 15px rgba(0, 255, 136, 0.4);
-            --glass: rgba(0, 20, 20, 0.15);
+            --emerald: #00ff88;
+            --bloom: 0 0 20px var(--emerald), inset 0 0 10px rgba(0, 255, 136, 0.3);
+            --glass: rgba(0, 20, 30, 0.4);
         }
 
-        * { margin:0; padding:0; box-sizing:border-box; }
-        body, html { 
-            width:100%; height:100%; overflow:hidden; 
-            background:#000; font-family: 'Arial Black', sans-serif; 
-            color: white; 
-        }
+        * { margin:0; padding:0; box-sizing:border-box; outline: none; }
+        body, html { width:100%; height:100%; overflow:hidden; background:#000; font-family: 'Courier New', monospace; color: white; }
 
         /* --- IMMERSIVE LANDING --- */
         #landing-stage {
-            position: fixed; inset: 0; z-index: 5000; background: #000;
-            display: flex; justify-content: center; align-items: center;
-            cursor: pointer;
+            position: fixed; inset: 0; z-index: 9000; background: #000;
+            display: flex; justify-content: center; align-items: center; cursor: pointer;
         }
-        .full-bg {
-            position: absolute; width: 100vw; height: 56.25vw; 
-            min-height: 100vh; min-width: 177.77vh;
-            top: 50%; left: 50%; transform: translate(-50%, -50%);
-            pointer-events: none;
-        }
+        .bg-vid { position: absolute; width: 100vw; height: 56.25vw; min-height: 100vh; min-width: 177.77vh; top: 50%; left: 50%; transform: translate(-50%, -50%); pointer-events: none; }
+        
         #landing-stage h1 {
-            position: relative; z-index: 5001; font-size: 1.2rem;
-            letter-spacing: 8px; border: 1px solid var(--nexus-blue);
-            padding: 20px 40px; border-radius: 100px;
-            background: rgba(0,0,0,0.4); backdrop-filter: blur(5px);
-            text-shadow: 0 0 10px var(--nexus-blue);
+            position: relative; z-index: 9001; padding: 25px 50px; border-radius: 100px;
+            border: 1px solid var(--nexus-blue); background: rgba(0,0,0,0.6);
+            backdrop-filter: blur(10px); letter-spacing: 10px; font-size: 1.2rem;
+            color: var(--nexus-blue); text-shadow: 0 0 15px var(--nexus-blue);
         }
 
-        /* --- TERMINAL OVERLAY --- */
-        #main-terminal {
-            position: fixed; inset: 0; z-index: 100; display: none;
-        }
+        /* --- SYSTEM LAYER --- */
+        #main-terminal { position: fixed; inset: 0; z-index: 100; display: none; }
+        #bg-click-shield { position: absolute; inset: 0; z-index: 5; }
 
-        /* --- ORACLE WINDOWS --- */
-        .oracle-window {
-            position: absolute; top: 45%; left: 50%; transform: translate(-50%, -50%);
-            width: min(450px, 92vw); height: 65vh;
-            background: var(--glass); 
-            border: 2px solid #00ff88; /* Green boundary */
-            box-shadow: var(--emerald-bloom);
-            border-radius: 30px; backdrop-filter: blur(15px);
-            display: none; flex-direction: column; overflow: hidden;
-            transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        /* --- HOLOFRAME WINDOWS --- */
+        .holo-window {
+            position: absolute; top: 45%; left: 50%; transform: translate(-50%, -50%) scale(0.8);
+            width: min(500px, 92vw); height: 60vh;
+            background: var(--glass); border: 2px solid var(--emerald);
+            box-shadow: var(--bloom); border-radius: 30px; backdrop-filter: blur(20px);
+            z-index: 50; display: none; flex-direction: column; overflow: hidden;
+            transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); opacity: 0;
         }
-        .oracle-window.active { display: flex; animation: zoomIn 0.5s ease forwards; }
+        .holo-window.active { display: flex; opacity: 1; transform: translate(-50%, -50%) scale(1); }
 
-        .video-container { position: absolute; inset: 0; z-index: 1; overflow: hidden; }
-        .video-container iframe { 
-            width: 100%; height: 100%; transform: scale(1.5); /* Fill window */
-            pointer-events: none; opacity: 0.6;
+        /* --- ORACLE CIRCULAR WINDOW (SEPARATE) --- */
+        #win-oracle {
+            position: absolute; top: 20%; right: 10%; 
+            width: 250px; height: 250px; border-radius: 50%;
+            border: 3px solid var(--emerald); box-shadow: var(--bloom);
+            overflow: hidden; z-index: 60; display: none;
+            background: #000; backdrop-filter: blur(5px);
         }
+        #win-oracle.active { display: block; animation: float 6s ease-in-out infinite; }
 
-        /* WORDS OVER VIDEO */
-        .content-overlay {
-            position: relative; z-index: 2; height: 100%; padding: 20px;
-            display: flex; flex-direction: column; justify-content: space-between;
-            background: linear-gradient(to bottom, rgba(0,0,0,0.4), transparent, rgba(0,0,0,0.7));
-        }
+        /* --- CONTENT STYLING --- */
+        .content-wrap { position: relative; z-index: 10; padding: 25px; height: 100%; display: flex; flex-direction: column; }
+        .scroll-area { flex-grow: 1; overflow-y: auto; margin: 15px 0; padding-right: 10px; }
+        .scroll-area::-webkit-scrollbar { width: 4px; }
+        .scroll-area::-webkit-scrollbar-thumb { background: var(--emerald); border-radius: 10px; }
+        
+        h2 { color: var(--emerald); font-size: 1.3rem; margin-bottom: 10px; text-transform: uppercase; letter-spacing: 2px; }
+        p, li { font-size: 0.9rem; line-height: 1.5; color: var(--nexus-blue); margin-bottom: 10px; }
+        .price-tag { color: #fff; font-weight: bold; background: rgba(188, 19, 254, 0.3); padding: 5px 10px; border-radius: 5px; }
 
-        .scroll-text {
-            flex-grow: 1; overflow: hidden; position: relative;
-            margin: 20px 0; mask-image: linear-gradient(transparent, black 15%, black 85%, transparent);
-        }
-        .text-move {
-            font-family: 'Courier New', monospace; font-size: 1.1rem; font-weight: bold;
-            color: var(--nexus-blue); text-shadow: 0 2px 4px black;
-            animation: scrollText 20s linear infinite;
-        }
-
-        /* --- HUD DOCK --- */
+        /* --- DOCK & ICONS --- */
         #hud-dock {
-            position: absolute; bottom: 40px; left: 50%; transform: translateX(-50%);
-            display: flex; gap: 40px; z-index: 200;
+            position: absolute; bottom: 30px; left: 50%; transform: translateX(-50%);
+            display: flex; gap: 25px; z-index: 1000;
         }
-        .icon-btn {
-            width: 55px; height: 55px; border: 2px solid var(--nexus-blue);
-            border-radius: 15px; background: rgba(0, 212, 255, 0.15);
+        .icon {
+            width: 60px; height: 60px; border: 2px solid var(--nexus-blue);
+            border-radius: 18px; background: rgba(0, 212, 255, 0.1);
             display: flex; align-items: center; justify-content: center;
-            cursor: pointer; font-size: 1.5rem; transition: 0.3s;
+            cursor: pointer; font-size: 1.6rem; transition: 0.3s;
         }
-        .icon-btn.active { border-color: #00ff88; box-shadow: var(--emerald-bloom); background: rgba(0, 255, 136, 0.2); }
+        .icon:hover { transform: translateY(-5px); border-color: var(--emerald); }
+        .icon.active { border-color: var(--emerald); box-shadow: var(--bloom); background: rgba(0, 255, 136, 0.15); }
 
         .transmit-btn {
-            padding: 15px; background: var(--neon-purple); color: white;
-            text-decoration: none; border-radius: 50px; text-align: center;
-            font-size: 0.8rem; letter-spacing: 2px; box-shadow: 0 0 20px var(--neon-purple);
+            display: block; padding: 15px; background: var(--neon-purple);
+            color: white; text-align: center; text-decoration: none;
+            border-radius: 50px; font-weight: bold; box-shadow: 0 0 15px var(--neon-purple);
         }
 
-        @keyframes scrollText { from { transform: translateY(100%); } to { transform: translateY(-100%); } }
-        @keyframes zoomIn { from { opacity: 0; transform: translate(-50%, -40%) scale(0.9); } to { opacity: 1; transform: translate(-50%, -50%) scale(1); } }
+        @keyframes float { 0%, 100% { transform: translateY(0px); } 50% { transform: translateY(-15px); } }
     </style>
 </head>
 <body>
 
 <div id="landing-stage" onclick="initTerminal()">
-    <iframe class="full-bg" src="https://www.youtube.com/embed/H7FoA6mrOtU?autoplay=1&mute=0&controls=0&loop=1&playlist=H7FoA6mrOtU" frameborder="0"></iframe>
-    <h1>ENTER THE DUTCHMAN</h1>
+    <iframe class="bg-vid" src="https://www.youtube.com/embed/H7FoA6mrOtU?autoplay=1&mute=0&controls=0&loop=1&playlist=H7FoA6mrOtU" frameborder="0"></iframe>
+    <h1>INITIATE LINK</h1>
 </div>
 
 <div id="main-terminal">
-    <iframe class="full-bg" src="https://www.youtube.com/embed/PEaZ5XUe0Mk?autoplay=1&mute=1&controls=0&loop=1&playlist=PEaZ5XUe0Mk" frameborder="0" style="opacity: 0.4;"></iframe>
+    <div id="bg-click-shield" onclick="closeAllWindows()"></div>
+    <iframe class="bg-vid" src="https://www.youtube.com/embed/PEaZ5XUe0Mk?autoplay=1&mute=1&controls=0&loop=1&playlist=PEaZ5XUe0Mk" frameborder="0" style="opacity:0.3"></iframe>
 
-    <div id="win-driver" class="oracle-window">
-        <div class="video-container">
-            <iframe src="https://www.youtube.com/embed/Q3NR_I-Sbjk?autoplay=1&mute=1&loop=1&playlist=Q3NR_I-Sbjk&controls=0" frameborder="0"></iframe>
-        </div>
-        <div class="content-overlay">
-            <h2 style="color:#00ff88">DRIVER PORTAL</h2>
-            <div class="scroll-text">
-                <div class="text-move">
-                    Stop letting your daily commute go to waste. <br><br>
-                    Turn your vehicle into a source of income by hosting ads for local and national brands. <br><br>
-                    Earn $200 per month for every decal you display. You choose the frequency.
-                </div>
+    <div id="win-driver" class="holo-window">
+        <div class="content-wrap">
+            <h2>Driver Portal</h2>
+            <div class="scroll-area">
+                <p>Host ads on your vehicle and earn passive income.</p>
+                <p class="price-tag">REWARD: $200 / MONTH</p>
+                <p>Olympus handles all logistics. Once the brand pays the first installment, we mail your custom decal or magnet directly to you at no cost.</p>
             </div>
-            <a href="mailto:dutchmanautoads@gmail.com?subject=Driver Registration" class="transmit-btn">TRANSMIT SIGNAL</a>
+            <a href="mailto:dutchmanautoads@gmail.com?subject=Driver Application" class="transmit-btn">TRANSMIT SIGNAL</a>
         </div>
     </div>
 
-    <div id="win-brand" class="oracle-window">
-        <div class="video-container">
-            <iframe src="https://www.youtube.com/embed/plWz-HFnVrE?autoplay=1&mute=1&loop=1&playlist=plWz-HFnVrE&controls=0" frameborder="0"></iframe>
-        </div>
-        <div class="content-overlay">
-            <h2 style="color:#00ff88">BRAND EXPANSION</h2>
-            <div class="scroll-text">
-                <div class="text-move">
-                    Turn local commutes into customer leads. <br><br>
-                    Transform everyday vehicles into powerful mobile advertisements. <br><br>
-                    Verified drivers. Targeted markets. Simple flat-rate pricing.
-                </div>
+    <div id="win-brand" class="holo-window">
+        <div class="content-wrap">
+            <h2>Brand Expansion</h2>
+            <div class="scroll-area">
+                <p>Deploy your brand onto the streets with verified local drivers.</p>
+                <p class="price-tag">COST: $300 / DRIVER / MONTH</p>
+                <ul>
+                    <li>$200 goes directly to the Driver.</li>
+                    <li>$100 to Olympus Management.</li>
+                </ul>
+                <p>Your first payment covers the production and shipping of the decals/magnets to the drivers.</p>
             </div>
             <a href="mailto:dutchmanautoads@gmail.com?subject=Brand Inquiry" class="transmit-btn">TRANSMIT SIGNAL</a>
         </div>
     </div>
 
-    <div id="win-product" class="oracle-window">
-        <div class="content-overlay">
-            <h2 style="color:#00ff88">DATA DECRYPTED</h2>
-            <div class="scroll-text">
-                <div class="text-move">
-                    [ SYSTEM ANALYSIS ] <br><br>
-                    - Decal Tech: High-grade vinyl <br>
-                    - Magnet Options: Rapid swap tech <br>
-                    - Tracking: Signal verified <br>
-                    - Payouts: 1st of every month
-                </div>
+    <div id="win-product" class="holo-window">
+        <div class="content-wrap">
+            <h2>Vistaprint Hardware</h2>
+            <div class="scroll-area">
+                <p><strong>Car Door Decals:</strong><br>
+                Materials: White or Clear Opaque Vinyl.<br>
+                Sizes: 3"x11" up to 24"x36". Weather-resistant.</p>
+                
+                <p><strong>Car Window Decals:</strong><br>
+                Perforated Vinyl (see out, they see ad) or Clear Front-Adhesive (inside glass).<br>
+                Sizes: Custom up to 48"x48".</p>
+                
+                <p><strong>Magnetic Signs:</strong><br>
+                High-strength 0.85mm magnets. Wind-tested up to 130km/h.</p>
             </div>
-            <div style="text-align:center; color:var(--nexus-blue); font-size:0.7rem;">STATUS: ONLINE</div>
         </div>
     </div>
 
+    <div id="win-oracle">
+        <iframe width="100%" height="100%" src="https://www.youtube.com/embed/Q3NR_I-Sbjk?autoplay=1&mute=1&loop=1&playlist=Q3NR_I-Sbjk&controls=0" frameborder="0" style="transform: scale(2.5);"></iframe>
+    </div>
+
     <div id="hud-dock">
-        <div class="icon-btn" id="ic-driver" onclick="toggleWin('driver')">🏎️</div>
-        <div class="icon-btn" id="ic-brand" onclick="toggleWin('brand')">🏢</div>
-        <div class="icon-btn" id="ic-product" onclick="toggleWin('product')">📊</div>
+        <div class="icon" id="ic-driver" onclick="toggleWin('driver')">🏎️</div>
+        <div class="icon" id="ic-brand" onclick="toggleWin('brand')">🏢</div>
+        <div class="icon" id="ic-product" onclick="toggleWin('product')">📏</div>
+        <div class="icon" id="ic-oracle" onclick="toggleWin('oracle')">🔮</div>
     </div>
 </div>
 
@@ -174,20 +161,33 @@
     function initTerminal() {
         document.getElementById('landing-stage').style.display = 'none';
         document.getElementById('main-terminal').style.display = 'block';
-        // Open the first one automatically as requested
-        toggleWin('driver');
-        
-        // Music escalation (optional: add background player here for louder audio)
+        toggleWin('driver'); // Start with Driver open
+        toggleWin('oracle'); // Start with Oracle floating
     }
 
-    function toggleWin(target) {
-        // Reset all
-        document.querySelectorAll('.oracle-window').forEach(w => w.classList.remove('active'));
-        document.querySelectorAll('.icon-btn').forEach(i => i.classList.remove('active'));
+    function toggleWin(id) {
+        const win = document.getElementById('win-' + id);
+        const icon = document.getElementById('ic-' + id);
+        
+        if (win.classList.contains('active')) {
+            win.classList.remove('active');
+            icon.classList.remove('active');
+        } else {
+            // If it's a main holoframe, close other main holoframes first
+            if(id !== 'oracle') {
+                document.querySelectorAll('.holo-window').forEach(w => w.classList.remove('active'));
+                document.querySelectorAll('.icon').forEach(i => {
+                    if(i.id !== 'ic-oracle') i.classList.remove('active');
+                });
+            }
+            win.classList.add('active');
+            icon.classList.add('active');
+        }
+    }
 
-        // Activate target
-        document.getElementById('win-' + target).classList.add('active');
-        document.getElementById('ic-' + target).classList.add('active');
+    function closeAllWindows() {
+        document.querySelectorAll('.holo-window, #win-oracle').forEach(w => w.classList.remove('active'));
+        document.querySelectorAll('.icon').forEach(i => i.classList.remove('active'));
     }
 </script>
 </body>
