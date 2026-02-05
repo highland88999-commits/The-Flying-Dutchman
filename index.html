@@ -16,7 +16,7 @@
         * { margin:0; padding:0; box-sizing:border-box; }
         body, html { width:100%; height:100%; overflow:hidden; background:#000; font-family: 'Arial Black', sans-serif; color: white; }
 
-        /* --- STAGE 1: GHOST GATE --- */
+        /* --- STAGE 1: SIGNAL GATE --- */
         #entry-gate {
             position: fixed; inset: 0; z-index: 9999; background: #000;
             display: flex; justify-content: center; align-items: center; cursor: pointer;
@@ -45,16 +45,14 @@
         #main-terminal { position: fixed; inset: 0; z-index: 100; display: none; }
         #bg-shield { position: absolute; inset: 0; z-index: 5; }
 
-        /* --- THE ORACLE (MP4 INTEGRATION) --- */
+        /* --- THE ORACLE (MP4) --- */
         #win-oracle {
             position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
             width: 350px; height: 350px; border-radius: 50%;
             border: 3px solid var(--nexus-blue); box-shadow: var(--bloom);
             overflow: hidden; z-index: 10; background: #000;
         }
-        #oracle-mp4 {
-            width: 100%; height: 100%; object-fit: cover;
-        }
+        .oracle-mp4 { width: 100%; height: 100%; object-fit: cover; }
 
         /* --- HOLOFRAMES --- */
         .holo-window {
@@ -67,7 +65,7 @@
         .holo-window.active { display: flex; animation: zoomIn 0.5s ease-out forwards; }
 
         .video-content { position: absolute; inset: 0; z-index: 1; opacity: 0.45; overflow: hidden; }
-        .video-content iframe { width: 100%; height: 100%; transform: scale(1.65); pointer-events: none; }
+        .video-content video { width: 100%; height: 100%; object-fit: cover; }
 
         .text-overlay {
             position: relative; z-index: 2; height: 100%; padding: 40px;
@@ -118,20 +116,20 @@
 
 <div id="main-terminal">
     <div id="bg-shield" onclick="closeAllWindows()"></div>
-    
     <div id="audio-engine"></div>
-    
     <iframe class="full-vid" src="https://www.youtube.com/embed/PEaZ5XUe0Mk?autoplay=1&mute=1&controls=0&loop=1&playlist=PEaZ5XUe0Mk" frameborder="0" style="opacity:0.35"></iframe>
 
     <div id="win-oracle">
-        <video id="oracle-mp4" autoplay loop muted playsinline>
+        <video class="oracle-mp4" autoplay loop muted playsinline>
             <source src="https://raw.githubusercontent.com/highland88999-commits/The-Flying-Dutchman/main/hailuo_1768837219.mp4" type="video/mp4">
         </video>
     </div>
 
     <div id="win-driver" class="holo-window">
         <div class="video-content">
-            <iframe src="https://www.youtube.com/embed/hxu-A3Uo5mg?autoplay=1&mute=1&loop=1&playlist=hxu-A3Uo5mg&controls=0" frameborder="0"></iframe>
+            <video autoplay loop muted playsinline>
+                <source src="https://raw.githubusercontent.com/highland88999-commits/The-Flying-Dutchman/main/hailuo_1767800503.mp4" type="video/mp4">
+            </video>
         </div>
         <div class="text-overlay">
             <h2 style="color:var(--emerald); letter-spacing:4px;">DRIVER PORTAL</h2>
@@ -149,7 +147,9 @@
 
     <div id="win-brand" class="holo-window">
         <div class="video-content">
-            <iframe src="https://www.youtube.com/embed/plWz-HFnVrE?autoplay=1&mute=1&loop=1&playlist=plWz-HFnVrE&controls=0" frameborder="0"></iframe>
+            <video autoplay loop muted playsinline>
+                <source src="https://raw.githubusercontent.com/highland88999-commits/The-Flying-Dutchman/main/hailuo_1767800359.mp4" type="video/mp4">
+            </video>
         </div>
         <div class="text-overlay">
             <h2 style="color:var(--emerald); letter-spacing:4px;">BRAND EXPANSION</h2>
@@ -176,7 +176,6 @@
         document.getElementById('entry-gate').style.display = 'none';
         const stage = document.getElementById('landing-stage');
         stage.style.display = 'flex';
-        // Auto-play the battle video with sound immediately
         const player = document.getElementById('battle-player');
         player.src += "&autoplay=1";
     }
@@ -184,12 +183,9 @@
     function enterTerminal() {
         document.getElementById('landing-stage').style.display = 'none';
         document.getElementById('main-terminal').style.display = 'block';
-        
-        // Start Eminem Soundtrack
         document.getElementById('audio-engine').innerHTML = `
             <iframe width="0" height="0" src="https://www.youtube.com/embed/videoseries?list=PLNQ3MUvaWFCDMsH6ZRGIBuBmcVzE0v7SH&autoplay=1" frameborder="0" allow="autoplay"></iframe>
         `;
-        
         toggleWin('driver');
     }
 
@@ -197,7 +193,6 @@
         const win = document.getElementById('win-' + id);
         const icon = document.getElementById('ic-' + id);
         if (!win) return;
-
         if (win.classList.contains('active')) {
             win.classList.remove('active');
             icon.classList.remove('active');
