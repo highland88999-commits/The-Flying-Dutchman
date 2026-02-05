@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+    <title>The Dutchman | Nexus Terminal</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <style>
+        :root {
+            --nexus-blue: #00d4ff;
+            --neon-purple: #bc13fe;
+            --deep-purple: #2e004f;
+            --bg-dark: #05011a;
+            --glass: rgba(5, 1, 26, 0.7);
+            --border: rgba(0, 242, 255, 0.3);
+        }
+
+        * { margin:0; padding:0; box-sizing:border-box; }
+        body, html { 
+            width:100%; height:100%; overflow:hidden; 
+            background:#000; font-family: 'Arial Black', sans-serif; 
+            color: white; 
+        }
+
+        /* Stage 1: Initial Hook */
+        #entry-curtain {
+            position: fixed; inset: 0; z-index: 3000; background: #000;
+            display: flex; justify-content: center; align-items: center;
+            cursor: pointer; transition: opacity 1s ease;
+        }
+
+        /* Stage 2: YouTube Landing Video (The Battle) */
+        #landing-stage { 
+            position: fixed; inset: 0; z-index: 2000; background: #000;
+            opacity: 0; pointer-events: none; transition: opacity 1.5s ease;
+            display: flex; justify-content: center; align-items: center;
+        }
+        #landing-stage.active { opacity: 1; pointer-events: all; cursor: pointer; }
+
+        .video-background {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            pointer-events: none;
+        }
+
+        #landing-prompt {
+            position: relative; z-index: 2001; text-align: center;
+            text-shadow: 0 0 20px #000; letter-spacing: 4px;
+        }
+
+        /* Stage 3: Main UI & Abyss */
+        canvas { position: fixed; top: 0; left: 0; z-index: 1; display: none; }
+        #ui-layer {
+            position: relative; z-index: 10; height: 100vh; width: 100vw;
+            display: none; flex-direction: column; align-items: center;
+            justify-content: center; opacity: 0; transition: opacity 2s ease;
+        }
+
+        .glass-panel {
+            background: var(--glass); border: 1px solid var(--border);
+            backdrop-filter: blur(15px); padding: 2rem; border-radius: 20px;
+            width: min(600px, 90vw); text-align: center;
+            box-shadow: 0 0 40px rgba(0, 212, 255, 0.2);
+        }
+
+        .scroll-window {
+            height: 220px; overflow: hidden; position: relative; margin: 20px 0;
+            mask-image: linear-gradient(transparent, black 20%, black 80%, transparent);
+            -webkit-mask-image: linear-gradient(transparent, black 20%, black 80%, transparent);
+        }
+
+        .scrolling-text {
+            font-family: 'Courier New', monospace; color: var(--nexus-blue);
+            font-size: 1rem; line-height: 1.3; position: absolute; width: 100%;
+            font-weight: bold; display: none; text-align: center;
+        }
+        .active-scroll { display: block; animation: scrollUp 45s linear forwards; }
+
+        @keyframes scrollUp {
+            0% { transform: translateY(100%); }
+            100% { transform: translateY(-130%); }
+        }
+
+        .toggle-group { display: flex; gap: 10px; justify-content: center; margin-bottom: 20px; }
+        .btn {
+            background: transparent; border: 1px solid var(--nexus-blue);
+            color: var(--nexus-blue); padding: 8px 16px; cursor: pointer;
+            font-size: 0.8rem; text-transform: uppercase; transition: 0.3s;
+        }
+        .btn.active { background: var(--nexus-blue); color: black; box-shadow: 0 0 15px var(--nexus-blue); }
+
+        #transmit-btn {
+            margin-top: 20px; padding: 15px 40px; background: var(--neon-purple);
+            border: none; color: white; font-weight: bold; letter-spacing: 2px;
+            box-shadow: 0 0 20px var(--neon-purple); cursor: pointer;
+        }
+
+        .pulse { animation: pulseAnim 2s infinite; }
+        @keyframes pulseAnim { 0%, 100% { opacity: 0.6; } 50% { opacity: 1; } }
+    </style>
+</head>
+<body>
+
+<div id="entry-curtain" onclick="initLanding()">
+    <div style="text-align:center;">
+        <h1 style="letter-spacing:10px; color:var(--nexus-blue);">THE DUTCHMAN</h1>
+        <p class="pulse">[ INITIATE LINK ]</p>
+    </div>
+</div>
+
+<div id="landing-stage" onclick="enterMainUI()">
+    <div class="video-background">
+        <div id="player"></div>
+    </div>
+    <div id="landing-prompt">
+        <h2 style="font-size: 2rem; color: white;">BATTLE FOR THE ABYSS</h2>
+        <p class="pulse" style="color:var(--nexus-blue);">CLICK TO PROCEED TO COMMAND</p>
+    </div>
+</div>
+
+<div id="ui-layer">
+    <div class="glass-panel">
+        <div class="toggle-group">
+            <button class="btn active" onclick="switchMode('driver', this)">Driver Access</button>
+            <button class="btn" onclick="switchMode('business', this)">Business Access</button>
+        </div>
+        <h1 id="mode-title" style="color:var(--nexus-blue);">DRIVE & EARN</h1>
+        <div class="scroll-window">
+            <div id="driver-text" class="scrolling-text active-scroll">
+                Stop letting your daily commute go to waste. 
+                Turn your vehicle into income by hosting ads for local and national brands. 
+                <br><br>
+                Earn $200 per month for every decal you display. 
+                You choose how many you're willing to host. 
+                <br><br>
+                We handle the details—from brand matching to mailing decals directly to you. 
+                <br><br>
+                Earnings are guaranteed and paid monthly, just for driving as you normally would. 
+                <br><br>
+                Ready to work? Tell us you're interested and we'll reach out when a campaign launches.
+            </div>
+            <div id="business-text" class="scrolling-text">
+                Turn local commutes into customer leads. 
+                <br><br>
+                We connect your business with a network of verified drivers in your target market, transforming their everyday vehicles into powerful mobile advertisements. 
+                <br><br>
+                You choose the decal or magnet size that fits your brand and budget, and we handle the rest—from driver matching to material delivery. 
+                <br><br>
+                Our simple, flat-rate pricing means you know exactly what you're paying for. 
+                <br><br>
+                Stop spending on static ads and start reaching customers where they live, work, and shop.
+            </div>
+        </div>
+        <button id="transmit-btn">TRANSMIT INTEREST</button>
+    </div>
+</div>
+
+<script>
+    // YouTube IFrame API Setup
+    var tag = document.createElement('script');
+    tag.src = "https://www.youtube.com/iframe_api";
+    var firstScriptTag = document.getElementsByTagName('script')[0];
+    firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+
+    var player;
+    function onYouTubeIframeAPIReady() {
+        player = new YT.Player('player', {
+            height: '100%',
+            width: '100%',
+            videoId: 'PEaZ5XUe0Mk',
+            playerVars: {
+                'autoplay': 0,
+                'controls': 0,
+                'showinfo': 0,
+                'rel': 0,
+                'loop': 1,
+                'playlist': 'PEaZ5XUe0Mk',
+                'mute': 0 // We start unmuted because it's user-initiated
+            }
+        });
+    }
+
+    // Step 1 -> Step 2
+    function initLanding() {
+        document.getElementById('entry-curtain').style.opacity = '0';
+        setTimeout(() => {
+            document.getElementById('entry-curtain').style.display = 'none';
+            document.getElementById('landing-stage').classList.add('active');
+            player.playVideo();
+        }, 1000);
+    }
+
+    // Step 2 -> Step 3
+    function enterMainUI() {
+        document.getElementById('landing-stage').style.opacity = '0';
+        player.pauseVideo();
+        
+        setTimeout(() => {
+            document.getElementById('landing-stage').style.display = 'none';
+            document.querySelector('canvas').style.display = 'block';
+            document.getElementById('ui-layer').style.display = 'flex';
+            setTimeout(() => {
+                document.getElementById('ui-layer').style.opacity = '1';
+            }, 100);
+            initThree();
+        }, 1500);
+    }
+
+    // --- THREE JS ABYSS ---
+    let scene, camera, renderer, clock = new THREE.Clock();
+    function initThree() {
+        scene = new THREE.Scene();
+        scene.fog = new THREE.FogExp2(0x000408, 0.02);
+        camera = new THREE.PerspectiveCamera(60, window.innerWidth/window.innerHeight, 0.1, 1000);
+        renderer = new THREE.WebGLRenderer({ antialias: true });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        document.body.appendChild(renderer.domElement);
+
+        const heart = new THREE.Mesh(new THREE.IcosahedronGeometry(6, 1), new THREE.MeshPhongMaterial({ color: 0x4d0000, wireframe: true, transparent: true, opacity: 0.3 }));
+        scene.add(heart);
+
+        const light = new THREE.PointLight(0x00d4ff, 2, 50);
+        light.position.set(5, 5, 5);
+        scene.add(light);
+        scene.add(new THREE.AmbientLight(0x001133));
+
+        animate();
+        function animate() {
+            requestAnimationFrame(animate);
+            const t = clock.getElapsedTime();
+            heart.rotation.y += 0.005;
+            camera.position.z = 25 + Math.sin(t * 0.1) * 5;
+            camera.lookAt(0,0,0);
+            renderer.render(scene, camera);
+        }
+    }
+
+    function switchMode(mode, btn) {
+        document.querySelectorAll('.btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        const drText = document.getElementById('driver-text');
+        const bzText = document.getElementById('business-text');
+        drText.classList.remove('active-scroll');
+        bzText.classList.remove('active-scroll');
+
+        if(mode === 'driver') {
+            document.getElementById('mode-title').innerText = "DRIVE & EARN";
+            void drText.offsetWidth; drText.classList.add('active-scroll');
+        } else {
+            document.getElementById('mode-title').innerText = "BRAND EXPANSION";
+            void bzText.offsetWidth; bzText.classList.add('active-scroll');
+        }
+    }
+
+    window.addEventListener('resize', () => {
+        if(camera) {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        }
+    });
+</script>
+
+</body>
+</html>
