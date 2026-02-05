@@ -16,10 +16,21 @@
         * { margin:0; padding:0; box-sizing:border-box; }
         body, html { width:100%; height:100%; overflow:hidden; background:#000; font-family: 'Arial Black', sans-serif; color: white; }
 
-        /* --- LANDING STAGE (Autoplay Battle) --- */
+        /* --- STAGE 1: GHOST GATE --- */
+        #entry-gate {
+            position: fixed; inset: 0; z-index: 9999; background: #000;
+            display: flex; justify-content: center; align-items: center; cursor: pointer;
+        }
+        .gate-btn {
+            padding: 20px 40px; border: 1px solid var(--nexus-blue); border-radius: 100px;
+            color: var(--nexus-blue); letter-spacing: 10px; font-size: 0.8rem;
+            text-shadow: 0 0 10px var(--nexus-blue); animation: breathe 3s infinite;
+        }
+
+        /* --- STAGE 2: CINEMATIC LANDING (FULL SOUND) --- */
         #landing-stage {
             position: fixed; inset: 0; z-index: 9000; background: #000;
-            display: flex; justify-content: center; align-items: center; cursor: pointer;
+            display: none; justify-content: center; align-items: center; cursor: pointer;
         }
         .full-vid { position: absolute; width: 100vw; height: 56.25vw; min-height: 100vh; min-width: 177.77vh; top: 50%; left: 50%; transform: translate(-50%, -50%); pointer-events: none; }
         
@@ -28,23 +39,21 @@
             border: 2px solid var(--nexus-blue); background: rgba(0,0,0,0.7);
             backdrop-filter: blur(10px); color: var(--nexus-blue); letter-spacing: 8px;
             text-shadow: 0 0 15px var(--nexus-blue); box-shadow: var(--bloom);
-            animation: pulse 2s infinite;
         }
 
-        /* --- TERMINAL LAYER --- */
+        /* --- STAGE 3: MAIN TERMINAL --- */
         #main-terminal { position: fixed; inset: 0; z-index: 100; display: none; }
         #bg-shield { position: absolute; inset: 0; z-index: 5; }
 
-        /* --- THE ORACLE (PERSISTENT CENTERED) --- */
-        /* Sits between background (z:5) and Holoframes (z:100) */
+        /* --- THE ORACLE (MP4 INTEGRATION) --- */
         #win-oracle {
             position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
-            width: 320px; height: 320px; border-radius: 50%;
+            width: 350px; height: 350px; border-radius: 50%;
             border: 3px solid var(--nexus-blue); box-shadow: var(--bloom);
             overflow: hidden; z-index: 10; background: #000;
         }
-        #win-oracle iframe {
-            width: 100%; height: 100%; transform: scale(1.4); pointer-events: none;
+        #oracle-mp4 {
+            width: 100%; height: 100%; object-fit: cover;
         }
 
         /* --- HOLOFRAMES --- */
@@ -55,9 +64,9 @@
             box-shadow: 0 0 20px var(--emerald); border-radius: 40px; backdrop-filter: blur(25px);
             z-index: 100; display: none; flex-direction: column; overflow: hidden;
         }
-        .holo-window.active { display: flex; animation: zoomFade 0.5s ease-out forwards; }
+        .holo-window.active { display: flex; animation: zoomIn 0.5s ease-out forwards; }
 
-        .video-content { position: absolute; inset: 0; z-index: 1; opacity: 0.4; overflow: hidden; }
+        .video-content { position: absolute; inset: 0; z-index: 1; opacity: 0.45; overflow: hidden; }
         .video-content iframe { width: 100%; height: 100%; transform: scale(1.65); pointer-events: none; }
 
         .text-overlay {
@@ -65,14 +74,13 @@
             display: flex; flex-direction: column; justify-content: space-between;
             background: linear-gradient(to bottom, rgba(0,0,0,0.7), transparent, rgba(0,0,0,0.9));
         }
-
         .text-move {
             font-family: 'Courier New', monospace; font-size: 1.15rem; font-weight: bold;
             color: var(--nexus-blue); text-shadow: 2px 2px 5px #000;
             animation: scrollUp 28s linear infinite;
         }
 
-        /* --- CLEAN DOCK (No Oracle Icon) --- */
+        /* --- DOCK --- */
         #hud-dock {
             position: absolute; bottom: 40px; left: 50%; transform: translateX(-50%);
             display: flex; gap: 40px; z-index: 1000;
@@ -81,9 +89,8 @@
             width: 65px; height: 65px; border: 2px solid var(--nexus-blue);
             border-radius: 20px; background: rgba(0, 212, 255, 0.1);
             display: flex; align-items: center; justify-content: center;
-            cursor: pointer; font-size: 1.8rem; transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            cursor: pointer; font-size: 1.8rem; transition: 0.4s;
         }
-        .icon:hover { transform: scale(1.1) translateY(-10px); border-color: var(--emerald); }
         .icon.active { border-color: var(--emerald); box-shadow: 0 0 25px var(--emerald); background: rgba(0, 255, 136, 0.2); }
 
         .transmit-btn {
@@ -93,15 +100,19 @@
             box-shadow: 0 0 25px var(--neon-purple);
         }
 
-        @keyframes pulse { 0%, 100% { transform: scale(1); opacity: 0.8; } 50% { transform: scale(1.05); opacity: 1; } }
+        @keyframes breathe { 0%, 100% { opacity: 0.4; } 50% { opacity: 1; } }
         @keyframes scrollUp { from { transform: translateY(110%); } to { transform: translateY(-130%); } }
-        @keyframes zoomFade { from { opacity: 0; transform: translate(-50%, -45%) scale(0.9); } to { opacity: 1; transform: translate(-50%, -50%) scale(1); } }
+        @keyframes zoomIn { from { opacity: 0; transform: translate(-50%, -45%) scale(0.9); } to { opacity: 1; transform: translate(-50%, -50%) scale(1); } }
     </style>
 </head>
 <body>
 
+<div id="entry-gate" onclick="initLanding()">
+    <div class="gate-btn">INITIATE SIGNAL</div>
+</div>
+
 <div id="landing-stage" onclick="enterTerminal()">
-    <iframe class="full-vid" src="https://www.youtube.com/embed/H7FoA6mrOtU?autoplay=1&mute=0&controls=0&loop=1&playlist=H7FoA6mrOtU" frameborder="0" allow="autoplay"></iframe>
+    <iframe id="battle-player" class="full-vid" src="https://www.youtube.com/embed/H7FoA6mrOtU?autoplay=0&mute=0&controls=0&loop=1&playlist=H7FoA6mrOtU" frameborder="0" allow="autoplay"></iframe>
     <div class="abyss-btn">ENTER THE ABYSS</div>
 </div>
 
@@ -113,7 +124,9 @@
     <iframe class="full-vid" src="https://www.youtube.com/embed/PEaZ5XUe0Mk?autoplay=1&mute=1&controls=0&loop=1&playlist=PEaZ5XUe0Mk" frameborder="0" style="opacity:0.35"></iframe>
 
     <div id="win-oracle">
-        <iframe src="https://www.youtube.com/embed/ooSAU64RjOQ?autoplay=1&mute=1&loop=1&playlist=ooSAU64RjOQ&controls=0" frameborder="0" allow="autoplay"></iframe>
+        <video id="oracle-mp4" autoplay loop muted playsinline>
+            <source src="https://raw.githubusercontent.com/highland88999-commits/The-Flying-Dutchman/main/hailuo_1768837219.mp4" type="video/mp4">
+        </video>
     </div>
 
     <div id="win-driver" class="holo-window">
@@ -159,16 +172,24 @@
 </div>
 
 <script>
+    function initLanding() {
+        document.getElementById('entry-gate').style.display = 'none';
+        const stage = document.getElementById('landing-stage');
+        stage.style.display = 'flex';
+        // Auto-play the battle video with sound immediately
+        const player = document.getElementById('battle-player');
+        player.src += "&autoplay=1";
+    }
+
     function enterTerminal() {
         document.getElementById('landing-stage').style.display = 'none';
         document.getElementById('main-terminal').style.display = 'block';
         
-        // Start Eminem Soundtrack on entry
+        // Start Eminem Soundtrack
         document.getElementById('audio-engine').innerHTML = `
             <iframe width="0" height="0" src="https://www.youtube.com/embed/videoseries?list=PLNQ3MUvaWFCDMsH6ZRGIBuBmcVzE0v7SH&autoplay=1" frameborder="0" allow="autoplay"></iframe>
         `;
         
-        // Auto-open Driver Portal on entry
         toggleWin('driver');
     }
 
